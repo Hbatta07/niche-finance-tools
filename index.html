@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Accurate Finance Calculators | EMI, Loan, SIP, FD & GST Tools</title>
+    <meta name="description" content="Free, production-ready financial calculators. Calculate monthly EMI, loan breakdowns, SIP wealth growth, Fixed Deposit maturity, and GST amounts instantly.">
+    <link rel="canonical" href="https://yourdomain.com/">
+    
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://yourdomain.com/">
+    <meta property="og:title" content="Accurate Finance Calculators | EMI, Loan, SIP, FD & GST Tools">
+    <meta property="og:description" content="Free, production-ready financial calculators. Calculate monthly EMI, loan breakdowns, SIP wealth growth, Fixed Deposit maturity, and GST amounts instantly.">
+    <meta property="og:image" content="https://yourdomain.com/assets/icons/icon-512.png">
+
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="https://yourdomain.com/">
+    <meta property="twitter:title" content="Accurate Finance Calculators | EMI, Loan, SIP, FD & GST Tools">
+    <meta property="twitter:description" content="Free, production-ready financial calculators. Calculate monthly EMI, loan breakdowns, SIP wealth growth, Fixed Deposit maturity, and GST amounts instantly.">
+    <meta property="twitter:image" content="https://yourdomain.com/assets/icons/icon-512.png">
+
+    <!-- PWA Web App Meta -->
+    <meta name="theme-color" content="#0f172a">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <link rel="apple-touch-icon" href="assets/icons/icon-192.png">
+    <link rel="manifest" href="manifest.json">
+    <link rel="stylesheet" href="style.css">
+
+    <!-- Structured Data: Website Schema -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebApplication",
+      "name": "FinCalc Niche Suite",
+      "url": "https://yourdomain.com/",
+      "applicationCategory": "FinancialApplication",
+      "operatingSystem": "All",
+      "browserRequirements": "Requires JavaScript. Requires HTML5.",
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "USD"
+      }
+    }
+    </script>
+</head>
+<body>
+    <header class="site-header">
+        <div class="header-container">
+            <a href="#" class="logo" id="brand-logo">FinCalc<span class="logo-dot">.</span></a>
+            <div class="header-actions">
+                <button id="theme-toggle" aria-label="Toggle dark/light mode" class="icon-btn">
+                    <svg class="sun-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364-6.364l-.707.707M6.343 17.657l-.707.707M16.243 17.657l.707.707M6.343 6.364l.707-.707M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+                    <svg class="moon-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9 9 0 0012 21a9 9 0 008.354-5.646z"></path></svg>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <main class="main-wrapper">
+        <!-- AdSense Top Leaderboard Placeholder -->
+        <div class="ads-wrapper ads-top">
+            <div class="adsense-placeholder" data-ad-slot="top-leaderboard">
+                <span class="ads-label">Advertisement</span>
+            </div>
+        </div>
+
+        <!-- Dashboard / Navigation Area -->
+        <section class="dashboard-section" id="home-view">
+            <div class="section-hero">
+                <h1>Professional Financial Framework</h1>
+                <p>Fast, client-side financial computation utilities designed for precision engineering calculations.</p>
+            </div>
+
+            <div class="search-filter-bar">
+                <div class="search-input-wrapper">
+                    <svg class="search-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+                    <input type="text" id="calc-search" placeholder="Search calculators (e.g., SIP, EMI)..." aria-label="Search calculators">
+                </div>
+                <div class="category-tabs">
+                    <button class="cat-tab active" data-category="all">All Tools</button>
+                    <button class="cat-tab" data-category="loans">Loans</button>
+                    <button class="cat-tab" data-category="investments">Investments</button>
+                    <button class="cat-tab" data-category="tax">Tax</button>
+                </div>
+            </div>
+
+            <!-- Recently Used Row -->
+            <div id="recent-container" class="recent-row hidden">
+                <span class="recent-title">Recent:</span>
+                <div id="recent-chips" class="recent-chips-wrapper"></div>
+            </div>
+
+            <!-- Calculators Grid Grid Grid -->
+            <div class="calculators-grid" id="tools-grid">
+                <!-- Card 1: EMI -->
+                <div class="calc-card" data-calc="emi" data-cat="loans">
+                    <div class="card-icon emi-icon"></div>
+                    <h3>EMI Calculator</h3>
+                    <p>Calculate your monthly installments, total interest commitments, and amortization timelines.</p>
+                    <button class="btn btn-secondary open-calc-btn" data-target="emi">Launch Tool</button>
+                </div>
+
+                <!-- Card 2: Loan -->
+                <div class="calc-card" data-calc="loan" data-cat="loans">
+                    <div class="card-icon loan-icon"></div>
+                    <h3>Loan Balance Analyzer</h3>
+                    <p>Analyze principal payloads, loan durations, and complete payment breakdown ratios.</p>
+                    <button class="btn btn-secondary open-calc-btn" data-target="loan">Launch Tool</button>
+                </div>
+
+                <!-- Card 3: SIP -->
+                <div class="calc-card" data-calc="sip" data-cat="investments">
+                    <div class="card-icon sip-icon"></div>
+                    <h3>SIP Wealth Estimator</h3>
+                    <p>Forecast Systematic Investment Plan wealth accumulations and long-term interest gains.</p>
+                    <button class="btn btn-secondary open-calc-btn" data-target="sip">Launch Tool</button>
+                </div>
+
+                <!-- Card 4: FD -->
+                <div class="calc-card" data-calc="fd" data-cat="investments">
+                    <div class="card-icon fd-icon"></div>
+                    <h3>Fixed Deposit (FD) Tool</h3>
+                    <p>Compute fixed-term interest accumulations and total maturity value payouts instantly.</p>
+                    <button class="btn btn-secondary open-calc-btn" data-target="fd">Launch Tool</button>
+                </div>
+
+                <!-- Card 5: GST -->
+                <div class="calc-card" data-calc="gst" data-cat="tax">
+                    <div class="card-icon gst-icon"></div>
+                    <h3>GST Tax Calculator</h3>
+                    <p>Add or remove Goods and Services Tax metrics dynamically across standardized tax slabs.</p>
+                    <button class="btn btn-secondary open-calc-btn" data-target="gst">Launch Tool</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Dynamic Target Tool Rendering Container -->
+        <section class="calculator-workspace hidden" id="workspace-view">
+            <nav class="breadcrumb-nav" aria-label="Breadcrumb">
+                <ol class="breadcrumbs">
+                    <li><a href="#" id="breadcrumb-home">Home</a></li>
+                    <li class="separator">/</li>
+                    <li id="breadcrumb-current" aria-current="page">Calculator</li>
+                </ol>
+            </nav>
+
+            <div class="workspace-layout">
+                <!-- Calculator Panel Wrapper -->
+                <div class="tool-interface-card">
+                    <!-- 1. EMI Calculator -->
+                    <div id="panel-emi" class="calc-panel hidden">
+                        <h2>EMI Calculator</h2>
+                        <form id="form-emi" novalidate>
+                            <div class="input-group">
+                                <label for="emi-principal">Principal Amount ($)</label>
+                                <input type="number" id="emi-principal" min="1" max="100000000" required>
+                                <span class="error-msg">Please enter a valid amount up to 100M.</span>
+                            </div>
+                            <div class="input-group">
+                                <label for="emi-rate">Annual Interest Rate (%)</label>
+                                <input type="number" id="emi-rate" min="0.1" max="100" step="0.01" required>
+                                <span class="error-msg">Enter a valid annual rate (0.1% - 100%).</span>
+                            </div>
+                            <div class="input-group">
+                                <label for="emi-tenure">Tenure (Years)</label>
+                                <input type="number" id="emi-tenure" min="1" max="50" required>
+                                <span class="error-msg">Enter a valid tenure between 1 and 50 years.</span>
+                            </div>
+                            <div class="form-actions">
+                                <button type="button" class="btn btn-neutral reset-btn">Reset</button>
+                                <button type="submit" class="btn btn-primary">Calculate</button>
+                            </div>
+                        </form>
+                    </div>
+
+                    <!-- 2. Loan Calculator -->
+                    <div id="panel-loan" class="calc-panel hidden">
+                        <h2>Loan Balance Analyzer</h2>
+                        <form id="form-loan" novalidate>
+                            <div class="input-group">
+                                <label for="loan-principal">Principal Base ($)</label>
+                                <input type="number" id="loan-principal" min="1" max="100000000" required>
+                                <span class="error-msg">Provide a valid principal amount up to 100M.</span>
+                            </div>
+                            <div class="input-group">
+                                <label for="loan-rate">Interest Percentage (%)</label>
+                                <input type="number" id="loan-rate" min="0.1" max="100" step="0.01" required>
+                                <span class="error-msg">Provide a valid interest rate (0.1% - 100%).</span>
+                            </div>
+                            <div class="input-group">
+                                <label for="loan-duration">Duration (Months)</label>
+                                <input type="number" id="loan-duration" min="1" max="600" required>
+                                <span class="error-msg">Provide a valid timeframe (1 to 600 months).</span>
+                            </div>
+                            <div class="form-actions">
+                                <button type="button" class="btn btn-neutral reset-btn">Reset</button>
+                                <button type="submit" class="btn btn-primary">Analyze</button>
+                            </div>
+                        </form>
+                    </div>
+
+                    <!-- 3. SIP Calculator -->
+                    <div id="panel-sip" class="calc-panel hidden">
+                        <h2>SIP Wealth Estimator</h2>
+                        <form id="form-sip" novalidate>
+                            <div class="input-group">
+                                <label for="sip-monthly">Monthly Investment ($)</label>
+                                <input type="number" id="sip-monthly" min="1" max="1000000" required>
+                                <span class="error-msg">Enter a continuous amount ($1 - $1M).</span>
+                            </div>
+                            <div class="input-group">
+                                <label for="sip-rate">Expected Return Rate (% p.a.)</label>
+                                <input type="number" id="sip-rate" min="0.1" max="50" step="0.1" required>
+                                <span class="error-msg">Enter an expected rate between 0.1% and 50%.</span>
+                            </div>
+                            <div class="input-group">
+                                <label for="sip-years">Investment Period (Years)</label>
+                                <input type="number" id="sip-years" min="1" max="40" required>
+                                <span class="error-msg">Enter a lifespan value between 1 and 40 years.</span>
+                            </div>
+                            <div class="form-actions">
+                                <button type="button" class="btn btn-neutral reset-btn">Reset</button>
+                                <button type="submit" class="btn btn-primary">Estimate</button>
+                            </div>
+                        </form>
+                    </div>
+
+                    <!-- 4. Fixed Deposit Calculator -->
+                    <div id="panel-fd" class="calc-panel hidden">
+                        <h2>Fixed Deposit (FD) Tool</h2>
+                        <form id="form-fd" novalidate>
+                            <div class="input-group">
+                                <label for="fd-principal">Principal Investment ($)</label>
+                                <input type="number" id="fd-principal" min="1" max="100000000" required>
+                                <span class="error-msg">Enter a clean principal balance up to 100M.</span>
+                            </div>
+                            <div class="input-group">
+                                <label for="fd-rate">Rate of Interest (% p.a.)</label>
+                                <input type="number" id="fd-rate" min="0.1" max="30" step="0.01" required>
+                                <span class="error-msg">Enter a verified rate boundary (0.1% - 30%).</span>
+                            </div>
+                            <div class="input-group">
+                                <label for="fd-years">Tenure Horizon (Years)</label>
+                                <input type="number" id="fd-years" min="1" max="25" required>
+                                <span class="error-msg">Enter an asset timeline (1 - 25 years).</span>
+                            </div>
+                            <div class="form-actions">
+                                <button type="button" class="btn btn-neutral reset-btn">Reset</button>
+                                <button type="submit" class="btn btn-primary">Compute</button>
+                            </div>
+                        </form>
+                    </div>
+
+                    <!-- 5. GST Calculator -->
+                    <div id="panel-gst" class="calc-panel hidden">
+                        <h2>GST Tax Calculator</h2>
+                        <form id="form-gst" novalidate>
+                            <div class="input-group">
+                                <label for="gst-amount">Base Net / Gross Cost ($)</label>
+                                <input type="number" id="gst-amount" min="1" max="100000000" required>
+                                <span class="error-msg">Enter a valid functional transaction amount.</span>
+                            </div>
+                            <div class="input-group">
+                                <label for="gst-slab">Standardized GST Rate Slabs</label>
+                                <select id="gst-slab" class="custom-select">
+                                    <option value="5">5% Standard Niche</option>
+                                    <option value="12" selected>12% Standard Business</option>
+                                    <option value="18">18% Standard Premium</option>
+                                    <option value="28">28% Luxury Tier</option>
+                                </select>
+                            </div>
+                            <div class="radio-toggle-group">
+                                <label class="radio-container">
+                                    <input type="radio" name="gst-mode" value="add" checked>
+                                    <span class="radio-label">Add GST (Net to Gross)</span>
+                                </label>
+                                <label class="radio-container">
+                                    <input type="radio" name="gst-mode" value="remove">
+                                    <span class="radio-label">Remove GST (Gross to Net)</span>
+                                </label>
+                            </div>
+                            <div class="form-actions">
+                                <button type="button" class="btn btn-neutral reset-btn">Reset</button>
+                                <button type="submit" class="btn btn-primary">Calculate Tax</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- Results Engine Presentation Box -->
+                <div class="tool-output-card">
+                    <div class="output-placeholder" id="output-blank-state">
+                        <svg class="placeholder-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z"></path></svg>
+                        <p>Awaiting baseline parameter inputs. Complete the form parameters and execute calculation engine to generate production reporting metrics.</p>
+                    </div>
+
+                    <div class="output-metrics hidden" id="output-display-state">
+                        <div class="metrics-grid" id="metrics-target">
+                            <!-- Dynamic Key-Value Pairs generated by JS engine are injected here -->
+                        </div>
+                        
+                        <div class="output-actions">
+                            <button id="btn-copy-metrics" class="btn btn-secondary btn-sm">Copy Results</button>
+                            <button id="btn-share-metrics" class="btn btn-secondary btn-sm">Share Link</button>
+                        </div>
+
+                        <!-- Data Presentation Block for Complex Schedules (EMI / Loan Breakdowns) -->
+                        <div id="table-scroll-area" class="table-container hidden">
+                            <table class="data-table" id="schedule-table">
+                                <thead>
+                                    <!-- Dynamic header injection based on module scope -->
+                                </thead>
+                                <tbody>
+                                    <!-- Dynamic iterative rows tracking data states -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Contextual Niche Inline Cross-Linking Row -->
+            <div class="cross-link-section">
+                <h4>Related Framework Modules</h4>
+                <div class="cross-links-grid" id="related-links-container">
+                    <!-- Related contextual modules 
