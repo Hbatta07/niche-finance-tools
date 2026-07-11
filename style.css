@@ -98,10 +98,12 @@ body {
     color: var(--accent);
 }
 
-.header-actions {
+..header-actions {
     display: flex;
     align-items: center;
+    gap: 0.25rem; /* Keeps items perfectly spaced out next to each other */
 }
+
 
 .icon-btn {
     background: none;
