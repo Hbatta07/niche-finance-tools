@@ -77,13 +77,14 @@ body {
 }
 
 .header-container {
-    max-width: 1200px;
+    width: 100%;
     margin: 0 auto;
-    padding: 1.25rem 1rem;
+    padding: 1.25rem 0.5rem; /* Reduced padding on mobile sides */
     display: flex;
     justify-content: space-between;
     align-items: center;
 }
+
 
 .logo {
     font-size: 1.5rem;
