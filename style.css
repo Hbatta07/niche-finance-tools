@@ -1,0 +1,618 @@
+/* ==========================================================================
+   1. DESIGN SYSTEM & TOKENS (Light Mode Default)
+   ========================================================================== */
+:root {
+    --bg-primary: #f8fafc;
+    --bg-secondary: #ffffff;
+    --bg-surface: #f1f5f9;
+    --text-primary: #0f172a;
+    --text-secondary: #475569;
+    --text-muted: #94a3b8;
+    --accent: #0284c7;
+    --accent-hover: #0369a1;
+    --border-color: #e2e8f0;
+    --success: #16a34a;
+    --error: #dc2626;
+    --radius-sm: 6px;
+    --radius-md: 12px;
+    --radius-lg: 16px;
+    --shadow-sm: 0 1px 3px rgba(0,0,0,0.05);
+    --shadow-md: 0 4px 6px -1px rgba(0,0,0,0.05), 0 2px 4px -1px rgba(0,0,0,0.03);
+    --shadow-lg: 0 10px 15px -3px rgba(0,0,0,0.05), 0 4px 6px -2px rgba(0,0,0,0.02);
+    --transition: all 0.2s ease-in-out;
+    --font-sans: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+}
+
+/* Dark Mode Theme Tokens Override */
+[data-theme="dark"] {
+    --bg-primary: #0f172a;
+    --bg-secondary: #1e293b;
+    --bg-surface: #334155;
+    --text-primary: #f8fafc;
+    --text-secondary: #cbd5e1;
+    --text-muted: #64748b;
+    --accent: #38bdf8;
+    --accent-hover: #7dd3fc;
+    --border-color: #334155;
+    --shadow-sm: 0 1px 3px rgba(0,0,0,0.2);
+    --shadow-md: 0 4px 6px -1px rgba(0,0,0,0.2), 0 2px 4px -1px rgba(0,0,0,0.1);
+    --shadow-lg: 0 10px 15px -3px rgba(0,0,0,0.3), 0 4px 6px -2px rgba(0,0,0,0.15);
+}
+
+/* ==========================================================================
+   2. CORE RESET & BASE STYLES
+   ========================================================================== */
+*, *::before, *::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+html, body {
+    height: 100%;
+    font-family: var(--font-sans);
+    background-color: var(--bg-primary);
+    color: var(--text-primary);
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+body {
+    display: flex;
+    flex-direction: column;
+}
+
+/* ==========================================================================
+   3. LAYOUT & SITE SHELL
+   ========================================================================== */
+.site-header {
+    background-color: var(--bg-secondary);
+    border-bottom: 1px solid var(--border-color);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+
+.header-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 1rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.logo {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    text-decoration: none;
+    letter-spacing: -0.025em;
+}
+
+.logo-dot {
+    color: var(--accent);
+}
+
+.icon-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: var(--text-secondary);
+    padding: 0.5rem;
+    border-radius: var(--radius-sm);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: var(--transition);
+}
+
+.icon-btn:hover {
+    background-color: var(--bg-surface);
+    color: var(--text-primary);
+}
+
+.sun-icon, [data-theme="dark"] .moon-icon { display: none; }
+[data-theme="dark"] .sun-icon { display: block; width: 20px; height: 20px; }
+.moon-icon { display: block; width: 20px; height: 20px; }
+
+.main-wrapper {
+    flex: 1;
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 1rem;
+}
+
+/* ==========================================================================
+   4. ADSENSE LAYOUT COMPLIANCE (Prevents Layout Shift)
+   ========================================================================== */
+.ads-wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 1.5rem 0;
+    width: 100%;
+}
+
+.adsense-placeholder {
+    background-color: var(--bg-secondary);
+    border: 1px dashed var(--border-color);
+    border-radius: var(--radius-md);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    min-height: 90px;
+    position: relative;
+}
+
+.ads-top .adsense-placeholder { max-width: 728px; min-height: 90px; }
+.ads-bottom .adsense-placeholder { max-width: 100%; min-height: 250px; }
+
+.ads-label {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+/* ==========================================================================
+   5. HOMEPAGE & SEARCH ARCHITECTURE
+   ========================================================================== */
+.section-hero {
+    text-align: center;
+    margin: 1.5rem 0 2rem 0;
+}
+
+.section-hero h1 {
+    font-size: 1.75rem;
+    font-weight: 800;
+    letter-spacing: -0.03em;
+    margin-bottom: 0.5rem;
+}
+
+.section-hero p {
+    color: var(--text-secondary);
+    font-size: 0.95rem;
+}
+
+.search-filter-bar {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    margin-bottom: 2rem;
+}
+
+.search-input-wrapper {
+    position: relative;
+    width: 100%;
+}
+
+.search-icon {
+    position: absolute;
+    left: 1rem;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 18px;
+    height: 18px;
+    color: var(--text-muted);
+}
+
+#calc-search {
+    width: 100%;
+    padding: 0.75rem 1rem 0.75rem 2.7rem;
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-md);
+    background-color: var(--bg-secondary);
+    color: var(--text-primary);
+    font-size: 1rem;
+    outline: none;
+    transition: var(--transition);
+}
+
+#calc-search:focus {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px rgba(2, 132, 199, 0.15);
+}
+
+.category-tabs {
+    display: flex;
+    gap: 0.5rem;
+    overflow-x: auto;
+    padding-bottom: 0.25rem;
+    scrollbar-width: none;
+}
+
+.category-tabs::-webkit-scrollbar { display: none; }
+
+.cat-tab {
+    background-color: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    color: var(--text-secondary);
+    padding: 0.5rem 1rem;
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    font-size: 0.875rem;
+    white-space: nowrap;
+    transition: var(--transition);
+}
+
+.cat-tab.active, .cat-tab:hover {
+    background-color: var(--accent);
+    color: #ffffff;
+    border-color: var(--accent);
+}
+
+/* Recent Used Row */
+.recent-row {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 1.5rem;
+    background-color: var(--bg-secondary);
+    padding: 0.5rem 1rem;
+    border-radius: var(--radius-md);
+    border: 1px solid var(--border-color);
+}
+
+.recent-title {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--text-secondary);
+}
+
+.recent-chips-wrapper {
+    display: flex;
+    gap: 0.5rem;
+    overflow-x: auto;
+}
+
+.recent-chip {
+    background-color: var(--bg-surface);
+    border: 1px solid var(--border-color);
+    color: var(--text-primary);
+    padding: 0.25rem 0.75rem;
+    border-radius: var(--radius-sm);
+    font-size: 0.75rem;
+    cursor: pointer;
+    transition: var(--transition);
+}
+
+.recent-chip:hover {
+    border-color: var(--accent);
+}
+
+/* Calculators Grid Layout */
+.calculators-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1rem;
+}
+
+.calc-card {
+    background-color: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-md);
+    padding: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    box-shadow: var(--shadow-sm);
+    transition: var(--transition);
+}
+
+.calc-card:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+    border-color: var(--accent);
+}
+
+.calc-card h3 {
+    font-size: 1.15rem;
+    margin-bottom: 0.5rem;
+    font-weight: 700;
+}
+
+.calc-card p {
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+    margin-bottom: 1.5rem;
+    flex: 1;
+}
+
+/* ==========================================================================
+   6. CALCULATOR WORKSPACE LAYOUT
+   ========================================================================== */
+.workspace-layout {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+    align-items: start;
+    margin-top: 1rem;
+}
+
+.breadcrumb-nav {
+    margin-bottom: 1rem;
+}
+
+.breadcrumbs {
+    list-style: none;
+    display: flex;
+    gap: 0.5rem;
+    font-size: 0.85rem;
+    color: var(--text-muted);
+}
+
+.breadcrumbs a {
+    color: var(--text-secondary);
+    text-decoration: none;
+}
+
+.breadcrumbs a:hover { text-decoration: underline; }
+
+.tool-interface-card, .tool-output-card {
+    background-color: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-lg);
+    padding: 1.5rem;
+    box-shadow: var(--shadow-sm);
+}
+
+/* Forms Framework Architecture */
+.calc-panel h2 {
+    font-size: 1.5rem;
+    margin-bottom: 1.5rem;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+}
+
+.input-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.375rem;
+    margin-bottom: 1.25rem;
+}
+
+.input-group label {
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--text-secondary);
+}
+
+.input-group input, .custom-select {
+    width: 100%;
+    padding: 0.75rem;
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-sm);
+    background-color: var(--bg-primary);
+    color: var(--text-primary);
+    font-size: 1rem;
+    outline: none;
+    transition: var(--transition);
+}
+
+.input-group input:focus, .custom-select:focus {
+    border-color: var(--accent);
+}
+
+.input-group.invalid input {
+    border-color: var(--error);
+}
+
+.error-msg {
+    color: var(--error);
+    font-size: 0.75rem;
+    display: none;
+}
+
+.input-group.invalid .error-msg {
+    display: block;
+}
+
+.radio-toggle-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    margin: 1.25rem 0;
+}
+
+.radio-container {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    cursor: pointer;
+}
+
+.radio-label {
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+}
+
+.form-actions {
+    display: flex;
+    gap: 1rem;
+    margin-top: 1.5rem;
+}
+
+/* Buttons Framework */
+.btn {
+    font-family: inherit;
+    font-size: 0.95rem;
+    font-weight: 600;
+    padding: 0.75rem 1.5rem;
+    border-radius: var(--radius-sm);
+    border: 1px solid transparent;
+    cursor: pointer;
+    text-align: center;
+    transition: var(--transition);
+    display: inline-block;
+    width: 100%;
+}
+
+.btn-primary { background-color: var(--accent); color: #ffffff; }
+.btn-primary:hover { background-color: var(--accent-hover); }
+.btn-secondary { background-color: var(--bg-surface); color: var(--text-primary); border-color: var(--border-color); }
+.btn-secondary:hover { background-color: var(--border-color); }
+.btn-neutral { background-color: transparent; color: var(--text-secondary); border-color: var(--border-color); }
+.btn-neutral:hover { background-color: var(--bg-surface); color: var(--text-primary); }
+
+.btn-sm { padding: 0.5rem 1rem; font-size: 0.85rem; width: auto; }
+
+/* ==========================================================================
+   7. OUTPUTS ENGINE & SCHEDULE PRESENTATION
+   ========================================================================== */
+.output-placeholder {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    min-height: 250px;
+    color: var(--text-muted);
+    padding: 2rem;
+}
+
+.placeholder-icon {
+    width: 48px;
+    height: 48px;
+    margin-bottom: 1rem;
+    stroke-width: 1.5;
+}
+
+.output-placeholder p { font-size: 0.9rem; max-width: 320px; }
+
+.metrics-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+.metric-item {
+    background-color: var(--bg-primary);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-md);
+    padding: 1rem;
+}
+
+.metric-label {
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+    font-weight: 600;
+    text-transform: uppercase;
+}
+
+.metric-val {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--accent);
+    margin-top: 0.25rem;
+}
+
+.output-actions {
+    display: flex;
+    gap: 0.5rem;
+    margin-bottom: 1.5rem;
+}
+
+.table-container {
+    width: 100%;
+    overflow-x: auto;
+    margin-top: 1.5rem;
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-md);
+}
+
+.data-table {
+    width: 100%;
+    border-collapse: collapse;
+    text-align: left;
+    font-size: 0.85rem;
+}
+
+.data-table th, .data-table td {
+    padding: 0.75rem 1rem;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.data-table th {
+    background-color: var(--bg-primary);
+    font-weight: 600;
+    color: var(--text-secondary);
+}
+
+.data-table tr:last-child td { border-bottom: none; }
+
+/* ==========================================================================
+   8. SEO UNDERPINNINGS & ACCORDIONS
+   ========================================================================== */
+.cross-link-section {
+    margin: 2.5rem 0;
+}
+
+.cross-link-section h4 {
+    font-size: 1rem;
+    margin-bottom: 0.75rem;
+    font-weight: 700;
+}
+
+.cross-links-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+
+.seo-knowledge-base { margin: 3rem 0 1rem 0; }
+.section-divider { border: 0; border-top: 1px solid var(--border-color); margin-bottom: 2rem; }
+.seo-knowledge-base h2 { font-size: 1.35rem; margin-bottom: 1.25rem; font-weight: 700; }
+
+.faq-accordion details {
+    background-color: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-md);
+    margin-bottom: 0.75rem;
+    padding: 1rem;
+}
+
+.faq-accordion summary {
+    font-weight: 600;
+    cursor: pointer;
+    outline: none;
+    font-size: 0.95rem;
+}
+
+.faq-accordion p {
+    margin-top: 0.5rem;
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+}
+
+.site-footer {
+    text-align: center;
+    padding: 2rem 1rem;
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    border-top: 1px solid var(--border-color);
+    background-color: var(--bg-secondary);
+}
+
+/* ==========================================================================
+   9. RESPONSIVE DESIGN BREAKPOINTS (Tablet / Desktop Expansion)
+   ========================================================================== */
+@media (min-width: 640px) {
+    .calculators-grid { grid-template-columns: repeat(2, 1fr); }
+    .search-filter-bar { flex-direction: row; align-items: center; }
+    .search-input-wrapper { flex: 1; }
+    .radio-toggle-group { flex-direction: row; gap: 1.5rem; }
+}
+
+@media (min-width: 960px) {
+    .calculators-grid { grid-template-columns: repeat(3, 1fr); }
+    .workspace-layout { grid-template-columns: 1.2fr 1.8fr; }
+    .metrics-grid { grid-template-columns: repeat(2, 1fr); }
+    .section-hero h1 { font-size: 2.25rem; }
+}
+
+/* Utility State Managers */
+.hidden { display: none !important; }
