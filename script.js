@@ -90,11 +90,11 @@ document.addEventListener("DOMContentLoaded", () => {
                     </form>
                 </div>
             `,
-            calculate: (formData) => {
-                const amount = parseFloat(formData.get("emi-amount"));
-                const annualRate = parseFloat(formData.get("emi-rate"));
-                const tenureVal = parseFloat(formData.get("emi-tenure"));
-                const type = formData.get("emi-type");
+            calculate: (form) => {
+                const amount = parseFloat(form.querySelector("#emi-amount").value);
+                const annualRate = parseFloat(form.querySelector("#emi-rate").value);
+                const tenureVal = parseFloat(form.querySelector("#emi-tenure").value);
+                const type = form.querySelector("input[name='emi-type']:checked").value;
 
                 const totalMonths = (type === "years") ? tenureVal * 12 : tenureVal;
                 const monthlyRate = (annualRate / 12) / 100;
@@ -168,15 +168,15 @@ document.addEventListener("DOMContentLoaded", () => {
                             <span class="error-msg">Enter a valid operational time period (1 - 50 years).</span>
                         </div>
                         <div class="form-actions">
-                            <button type="submit" class="btn btn-primary">Project Compounding Future Wealth</button>
+                            <button type="submit" class="btn btn-primary">Project Wealth</button>
                         </div>
                     </form>
                 </div>
             `,
-            calculate: (formData) => {
-                const monthlyContribution = parseFloat(formData.get("sip-investment"));
-                const annualRate = parseFloat(formData.get("sip-rate"));
-                const years = parseFloat(formData.get("sip-years"));
+            calculate: (form) => {
+                const monthlyContribution = parseFloat(form.querySelector("#sip-investment").value);
+                const annualRate = parseFloat(form.querySelector("#sip-rate").value);
+                const years = parseFloat(form.querySelector("#sip-years").value);
 
                 const totalMonths = years * 12;
                 const monthlyRate = (annualRate / 12) / 100;
@@ -195,7 +195,7 @@ document.addEventListener("DOMContentLoaded", () => {
                     <div class="metrics-grid">
                         <div class="metric-item"><div class="metric-label">Estimated Future Value</div><div class="metric-val">${currencyFormatter.format(futureValue)}</div></div>
                         <div class="metric-item"><div class="metric-label">Total Cash Deposited</div><div class="metric-val">${currencyFormatter.format(totalInvested)}</div></div>
-                        <div class="metric-item"><div class="metric-label">Compounded Wealth Return</div><div class="metric-val">${currencyFormatter.format(wealthGain)}</div></div>
+                        <div class="metric-item"><div class="metric-label">Compounded Return</div><div class="metric-val">${currencyFormatter.format(wealthGain)}</div></div>
                     </div>
                     <div class="table-container">
                         <table class="data-table">
@@ -237,15 +237,15 @@ document.addEventListener("DOMContentLoaded", () => {
                             <span class="error-msg">Please specify operational duration framework timelines (1 - 30 years).</span>
                         </div>
                         <div class="form-actions">
-                            <button type="submit" class="btn btn-primary">Calculate Maturity Dividends</button>
+                            <button type="submit" class="btn btn-primary">Calculate Maturity</button>
                         </div>
                     </form>
                 </div>
             `,
-            calculate: (formData) => {
-                const principal = parseFloat(formData.get("fd-principal"));
-                const rate = parseFloat(formData.get("fd-rate"));
-                const years = parseFloat(formData.get("fd-years"));
+            calculate: (form) => {
+                const principal = parseFloat(form.querySelector("#fd-principal").value);
+                const rate = parseFloat(form.querySelector("#fd-rate").value);
+                const years = parseFloat(form.querySelector("#fd-years").value);
 
                 const compoundingFrequency = 4; 
                 const maturityValue = principal * Math.pow(1 + (rate / (compoundingFrequency * 100)), compoundingFrequency * years);
@@ -255,7 +255,7 @@ document.addEventListener("DOMContentLoaded", () => {
                     <div class="metrics-grid">
                         <div class="metric-item"><div class="metric-label">Maturity Value Amount</div><div class="metric-val">${currencyFormatter.format(maturityValue)}</div></div>
                         <div class="metric-item"><div class="metric-label">Initial Balance Invested</div><div class="metric-val">${currencyFormatter.format(principal)}</div></div>
-                        <div class="metric-item"><div class="metric-label">Total Yield Interest Balance</div><div class="metric-val">${currencyFormatter.format(interestEarned)}</div></div>
+                        <div class="metric-item"><div class="metric-label">Total Yield Interest</div><div class="metric-val">${currencyFormatter.format(interestEarned)}</div></div>
                     </div>
                     <div class="table-container">
                         <table class="data-table">
@@ -276,7 +276,7 @@ document.addEventListener("DOMContentLoaded", () => {
             }
         },
         inflation: {
-            title: "Inflation Degradation Timeline Adjuster",
+            title: "Inflation Degradation Horizon Map",
             renderInputs: () => `
                 <div class="calc-panel">
                     <h2>Inflation Impact Calculator</h2>
@@ -289,31 +289,31 @@ document.addEventListener("DOMContentLoaded", () => {
                         <div class="input-group">
                             <label for="inf-rate">Estimated Dynamic Inflation Rate (%)</label>
                             <input type="number" id="inf-rate" required min="0.1" max="25" step="any" placeholder="e.g., 6">
-                            <span class="error-msg">Enter standard annualized structural indexes framework percentages (0.1% - 25%).</span>
+                            <span class="error-msg">Enter standard annualized framework percentages (0.1% - 25%).</span>
                         </div>
                         <div class="input-group">
                             <label for="inf-years">Timeline (Years Horizon)</label>
                             <input type="number" id="inf-years" required min="1" max="50" placeholder="e.g., 10">
-                            <span class="error-msg">Set target evaluation horizon range maps (1 - 50 years).</span>
+                            <span class="error-msg">Set target evaluation horizon maps (1 - 50 years).</span>
                         </div>
                         <div class="form-actions">
-                            <button type="submit" class="btn btn-primary">Process Purchasing Value Drop</button>
+                            <button type="submit" class="btn btn-primary">Process Value Drop</button>
                         </div>
                     </form>
                 </div>
             `,
-            calculate: (formData) => {
-                const amount = parseFloat(formData.get("inf-amount"));
-                const rate = parseFloat(formData.get("inf-rate"));
-                const years = parseFloat(formData.get("inf-years"));
+            calculate: (form) => {
+                const amount = parseFloat(form.querySelector("#inf-amount").value);
+                const rate = parseFloat(form.querySelector("#inf-rate").value);
+                const years = parseFloat(form.querySelector("#inf-years").value);
 
                 const futurePurchasingPower = amount / Math.pow(1 + (rate / 100), years);
                 const lostPurchasingPower = amount - futurePurchasingPower;
 
                 let html = `
                     <div class="metrics-grid">
-                        <div class="metric-item"><div class="metric-label">Future Value Equal Real Purchasing Capacity</div><div class="metric-val">${currencyFormatter.format(futurePurchasingPower)}</div></div>
-                        <div class="metric-item"><div class="metric-label">Total Real Cash Wealth Decay</div><div class="metric-val">${currencyFormatter.format(lostPurchasingPower)}</div></div>
+                        <div class="metric-item"><div class="metric-label">Future Purchasing Capacity</div><div class="metric-val">${currencyFormatter.format(futurePurchasingPower)}</div></div>
+                        <div class="metric-item"><div class="metric-label">Real Cash Wealth Decay</div><div class="metric-val">${currencyFormatter.format(lostPurchasingPower)}</div></div>
                     </div>
                     <div class="table-container">
                         <table class="data-table">
@@ -341,7 +341,7 @@ document.addEventListener("DOMContentLoaded", () => {
                         <div class="input-group">
                             <label for="gst-amount">Transaction Base Cost Value</label>
                             <input type="number" id="gst-amount" required min="1" placeholder="e.g., 25000">
-                            <span class="error-msg">Please specify operational transaction metrics base configurations.</span>
+                            <span class="error-msg">Please specify transaction base configurations.</span>
                         </div>
                         <div class="input-group">
                             <label for="gst-rate">Tax Slab Rate (%)</label>
@@ -363,15 +363,15 @@ document.addEventListener("DOMContentLoaded", () => {
                             </label>
                         </div>
                         <div class="form-actions">
-                            <button type="submit" class="btn btn-primary">Process Invoice Ledger Parameters</button>
+                            <button type="submit" class="btn btn-primary">Process Invoice Ledger</button>
                         </div>
                     </form>
                 </div>
             `,
-            calculate: (formData) => {
-                const amount = parseFloat(formData.get("gst-amount"));
-                const slabRate = parseFloat(formData.get("gst-rate"));
-                const mode = formData.get("gst-mode");
+            calculate: (form) => {
+                const amount = parseFloat(form.querySelector("#gst-amount").value);
+                const slabRate = parseFloat(form.querySelector("#gst-rate").value);
+                const mode = form.querySelector("input[name='gst-mode']:checked").value;
 
                 let taxValue = 0;
                 let finalNetGrossAmount = 0;
@@ -392,16 +392,16 @@ document.addEventListener("DOMContentLoaded", () => {
                 return `
                     <div class="metrics-grid">
                         <div class="metric-item"><div class="metric-label">Total Invoice Cost Value</div><div class="metric-val">${currencyFormatter.format(finalNetGrossAmount)}</div></div>
-                        <div class="metric-item"><div class="metric-label">Raw Net Production Asset Cost</div><div class="metric-val">${currencyFormatter.format(baseCostResultVal)}</div></div>
+                        <div class="metric-item"><div class="metric-label">Raw Net Product Cost</div><div class="metric-val">${currencyFormatter.format(baseCostResultVal)}</div></div>
                         <div class="metric-item"><div class="metric-label">Total Tax Commitment Value</div><div class="metric-val">${currencyFormatter.format(taxValue)}</div></div>
                     </div>
                     <div class="table-container">
                         <table class="data-table">
                             <thead><tr><th>Tax Structure Metric Entity</th><th>Ledger Allocation Value</th></tr></thead>
                             <tbody>
-                                <tr><td>Central CGST Level Distribution Share (50%)</td><td>${currencyFormatter.format(splitTaxVal)}</td></tr>
-                                <tr><td>State SGST Level Distribution Share (50%)</td><td>${currencyFormatter.format(splitTaxVal)}</td></tr>
-                                <tr><td>Gross Aggregate Core Invoiced Ledger Value</td><td>${currencyFormatter.format(finalNetGrossAmount)}</td></tr>
+                                <tr><td>Central CGST Level Share (50%)</td><td>${currencyFormatter.format(splitTaxVal)}</td></tr>
+                                <tr><td>State SGST Level Share (50%)</td><td>${currencyFormatter.format(splitTaxVal)}</td></tr>
+                                <tr><td>Gross Aggregate Invoiced Ledger Value</td><td>${currencyFormatter.format(finalNetGrossAmount)}</td></tr>
                             </tbody>
                         </table>
                     </div>
@@ -418,7 +418,7 @@ document.addEventListener("DOMContentLoaded", () => {
             <div class="output-placeholder">
                 <svg class="placeholder-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z"></path></svg>
                 <h3>Computation Matrix Empty</h3>
-                <p>Modify local form parameters variables structural variables and tap execute calculation framework actions.</p>
+                <p>Modify parameters and execute calculation actions.</p>
             </div>
         `;
     }
@@ -468,8 +468,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
             if (!formsAreValid) return;
 
-            const compiledPayload = new FormData(form);
-            outputContainer.innerHTML = registry[id].calculate(compiledPayload);
+            outputContainer.innerHTML = registry[id].calculate(form);
         });
 
         form.querySelectorAll("input").forEach(field => {
@@ -560,7 +559,7 @@ document.addEventListener("DOMContentLoaded", () => {
     if (brandLogo) brandLogo.addEventListener("click", (e) => { e.preventDefault(); routeToDashboard(); });
 
     /* ==========================================================================
-       7. MODERN LIGHT/DARK THEME MANAGEMENT TOOGLE MATRIX LAYER
+       7. THEME MANAGER MATRIX
        ========================================================================== */
     const themeToggleBtn = document.getElementById("theme-toggle");
     if (themeToggleBtn) {
