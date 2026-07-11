@@ -3,23 +3,16 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Accurate Finance Calculators | EMI, Loan, SIP, FD & GST Tools</title>
-    <meta name="description" content="Free, production-ready financial calculators. Calculate monthly EMI, loan breakdowns, SIP wealth growth, Fixed Deposit maturity, and GST amounts instantly.">
+    <title>Accurate Finance Calculators | Money Mate</title>
+    <meta name="description" content="Free production-ready financial calculators by Aveena Labs. Calculate monthly EMI, loan breakdowns, SIP wealth growth, Fixed Deposit maturity, and GST amounts instantly.">
     <link rel="canonical" href="https://yourdomain.com/">
     
     <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://yourdomain.com/">
-    <meta property="og:title" content="Accurate Finance Calculators | EMI, Loan, SIP, FD & GST Tools">
-    <meta property="og:description" content="Free, production-ready financial calculators. Calculate monthly EMI, loan breakdowns, SIP wealth growth, Fixed Deposit maturity, and GST amounts instantly.">
+    <meta property="og:title" content="Accurate Finance Calculators | Money Mate">
+    <meta property="og:description" content="Free production-ready financial calculators by Aveena Labs. Calculate monthly EMI, loan breakdowns, SIP wealth growth, Fixed Deposit maturity, and GST amounts instantly.">
     <meta property="og:image" content="https://yourdomain.com/assets/icons/icon-512.png">
-
-    <!-- Twitter -->
-    <meta property="twitter:card" content="summary_large_image">
-    <meta property="twitter:url" content="https://yourdomain.com/">
-    <meta property="twitter:title" content="Accurate Finance Calculators | EMI, Loan, SIP, FD & GST Tools">
-    <meta property="twitter:description" content="Free, production-ready financial calculators. Calculate monthly EMI, loan breakdowns, SIP wealth growth, Fixed Deposit maturity, and GST amounts instantly.">
-    <meta property="twitter:image" content="https://yourdomain.com/assets/icons/icon-512.png">
 
     <!-- PWA Web App Meta -->
     <meta name="theme-color" content="#0f172a">
@@ -34,23 +27,19 @@
     {
       "@context": "https://schema.org",
       "@type": "WebApplication",
-      "name": "FinCalc Niche Suite",
+      "name": "Money Mate",
       "url": "https://yourdomain.com/",
       "applicationCategory": "FinancialApplication",
       "operatingSystem": "All",
       "browserRequirements": "Requires JavaScript. Requires HTML5.",
-      "offers": {
-        "@type": "Offer",
-        "price": "0",
-        "priceCurrency": "USD"
-      }
+      "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" }
     }
     </script>
 </head>
 <body>
     <header class="site-header">
         <div class="header-container">
-            <a href="#" class="logo" id="brand-logo">FinCalc<span class="logo-dot">.</span></a>
+            <a href="#" class="logo" id="brand-logo">Money Mate<span class="logo-dot">.</span></a>
             <div class="header-actions">
                 <button id="theme-toggle" aria-label="Toggle dark/light mode" class="icon-btn">
                     <svg class="sun-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364-6.364l-.707.707M6.343 17.657l-.707.707M16.243 17.657l.707.707M6.343 6.364l.707-.707M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
@@ -61,24 +50,20 @@
     </header>
 
     <main class="main-wrapper">
-        <!-- AdSense Top Leaderboard Placeholder -->
         <div class="ads-wrapper ads-top">
-            <div class="adsense-placeholder" data-ad-slot="top-leaderboard">
-                <span class="ads-label">Advertisement</span>
-            </div>
+            <div class="adsense-placeholder" data-ad-slot="top-leaderboard"><span class="ads-label">Advertisement</span></div>
         </div>
 
-        <!-- Dashboard / Navigation Area -->
         <section class="dashboard-section" id="home-view">
             <div class="section-hero">
                 <h1>Professional Financial Framework</h1>
-                <p>Fast, client-side financial computation utilities designed for precision engineering calculations.</p>
+                <p>Fast, client-side tools designed for precision engineering calculations by Aveena Labs.</p>
             </div>
 
             <div class="search-filter-bar">
                 <div class="search-input-wrapper">
                     <svg class="search-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
-                    <input type="text" id="calc-search" placeholder="Search calculators (e.g., SIP, EMI)..." aria-label="Search calculators">
+                    <input type="text" id="calc-search" placeholder="Search calculators (e.g., SIP, EMI)...">
                 </div>
                 <div class="category-tabs">
                     <button class="cat-tab active" data-category="all">All Tools</button>
@@ -88,57 +73,39 @@
                 </div>
             </div>
 
-            <!-- Recently Used Row -->
             <div id="recent-container" class="recent-row hidden">
                 <span class="recent-title">Recent:</span>
                 <div id="recent-chips" class="recent-chips-wrapper"></div>
             </div>
 
-            <!-- Calculators Grid Grid Grid -->
             <div class="calculators-grid" id="tools-grid">
-                <!-- Card 1: EMI -->
                 <div class="calc-card" data-calc="emi" data-cat="loans">
-                    <div class="card-icon emi-icon"></div>
                     <h3>EMI Calculator</h3>
                     <p>Calculate your monthly installments, total interest commitments, and amortization timelines.</p>
                     <button class="btn btn-secondary open-calc-btn" data-target="emi">Launch Tool</button>
                 </div>
-
-                <!-- Card 2: Loan -->
                 <div class="calc-card" data-calc="loan" data-cat="loans">
-                    <div class="card-icon loan-icon"></div>
                     <h3>Loan Balance Analyzer</h3>
                     <p>Analyze principal payloads, loan durations, and complete payment breakdown ratios.</p>
                     <button class="btn btn-secondary open-calc-btn" data-target="loan">Launch Tool</button>
                 </div>
-
-                <!-- Card 3: SIP -->
                 <div class="calc-card" data-calc="sip" data-cat="investments">
-                    <div class="card-icon sip-icon"></div>
                     <h3>SIP Wealth Estimator</h3>
                     <p>Forecast Systematic Investment Plan wealth accumulations and long-term interest gains.</p>
                     <button class="btn btn-secondary open-calc-btn" data-target="sip">Launch Tool</button>
                 </div>
-
-                <!-- Card 4: FD -->
                 <div class="calc-card" data-calc="fd" data-cat="investments">
-                    <div class="card-icon fd-icon"></div>
                     <h3>Fixed Deposit (FD) Tool</h3>
                     <p>Compute fixed-term interest accumulations and total maturity value payouts instantly.</p>
                     <button class="btn btn-secondary open-calc-btn" data-target="fd">Launch Tool</button>
                 </div>
-
-                <!-- Card 5: GST -->
                 <div class="calc-card" data-calc="gst" data-cat="tax">
-                    <div class="card-icon gst-icon"></div>
                     <h3>GST Tax Calculator</h3>
                     <p>Add or remove Goods and Services Tax metrics dynamically across standardized tax slabs.</p>
                     <button class="btn btn-secondary open-calc-btn" data-target="gst">Launch Tool</button>
                 </div>
             </div>
         </section>
-
-        <!-- Dynamic Target Tool Rendering Container -->
         <section class="calculator-workspace hidden" id="workspace-view">
             <nav class="breadcrumb-nav" aria-label="Breadcrumb">
                 <ol class="breadcrumbs">
@@ -149,7 +116,6 @@
             </nav>
 
             <div class="workspace-layout">
-                <!-- Calculator Panel Wrapper -->
                 <div class="tool-interface-card">
                     <!-- 1. EMI Calculator -->
                     <div id="panel-emi" class="calc-panel hidden">
@@ -229,7 +195,7 @@
                         </form>
                     </div>
 
-                    <!-- 4. Fixed Deposit Calculator -->
+                    <!-- 4. FD Calculator -->
                     <div id="panel-fd" class="calc-panel hidden">
                         <h2>Fixed Deposit (FD) Tool</h2>
                         <form id="form-fd" novalidate>
@@ -276,11 +242,11 @@
                             <div class="radio-toggle-group">
                                 <label class="radio-container">
                                     <input type="radio" name="gst-mode" value="add" checked>
-                                    <span class="radio-label">Add GST (Net to Gross)</span>
+                                    <span class="radio-label">Add GST</span>
                                 </label>
                                 <label class="radio-container">
                                     <input type="radio" name="gst-mode" value="remove">
-                                    <span class="radio-label">Remove GST (Gross to Net)</span>
+                                    <span class="radio-label">Remove GST</span>
                                 </label>
                             </div>
                             <div class="form-actions">
@@ -290,41 +256,62 @@
                         </form>
                     </div>
                 </div>
-
-                <!-- Results Engine Presentation Box -->
                 <div class="tool-output-card">
                     <div class="output-placeholder" id="output-blank-state">
                         <svg class="placeholder-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z"></path></svg>
-                        <p>Awaiting baseline parameter inputs. Complete the form parameters and execute calculation engine to generate production reporting metrics.</p>
+                        <p>Awaiting baseline inputs. Complete the details and execute calculation to generate report metrics.</p>
                     </div>
 
                     <div class="output-metrics hidden" id="output-display-state">
-                        <div class="metrics-grid" id="metrics-target">
-                            <!-- Dynamic Key-Value Pairs generated by JS engine are injected here -->
-                        </div>
-                        
+                        <div class="metrics-grid" id="metrics-target"></div>
                         <div class="output-actions">
                             <button id="btn-copy-metrics" class="btn btn-secondary btn-sm">Copy Results</button>
                             <button id="btn-share-metrics" class="btn btn-secondary btn-sm">Share Link</button>
                         </div>
-
-                        <!-- Data Presentation Block for Complex Schedules (EMI / Loan Breakdowns) -->
                         <div id="table-scroll-area" class="table-container hidden">
                             <table class="data-table" id="schedule-table">
-                                <thead>
-                                    <!-- Dynamic header injection based on module scope -->
-                                </thead>
-                                <tbody>
-                                    <!-- Dynamic iterative rows tracking data states -->
-                                </tbody>
+                                <thead></thead>
+                                <tbody></tbody>
                             </table>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <!-- Contextual Niche Inline Cross-Linking Row -->
             <div class="cross-link-section">
                 <h4>Related Framework Modules</h4>
-                <div class="cross-links-grid" id="related-links-container">
-                    <!-- Related contextual modules 
+                <div class="cross-links-grid" id="related-links-container"></div>
+            </div>
+
+            <section class="seo-knowledge-base">
+                <hr class="section-divider">
+                <h2>Operational Knowledge Base & FAQ</h2>
+                <div class="faq-accordion">
+                    <div class="faq-item">
+                        <details>
+                            <summary>How are these financial calculation algorithms derived?</summary>
+                            <p>Our tools utilize serverless, client-side formulas compliant with banking standards, tracking exact progressions linearly.</p>
+                        </details>
+                    </div>
+                    <div class="faq-item">
+                        <details>
+                            <summary>Are these computations tracking safe data regulations?</summary>
+                            <p>Absolutely. Zero payloads are relayed over external API layers. Everything executes strictly within your device's runtime sandboxed memory.</p>
+                        </details>
+                    </div>
+                </div>
+            </section>
+        </section>
+
+        <div class="ads-wrapper ads-bottom">
+            <div class="adsense-placeholder" data-ad-slot="bottom-article"><span class="ads-label">Advertisement</span></div>
+        </div>
+    </main>
+
+    <footer class="site-footer">
+        <p>&copy; 2026 Aveena Labs. All rights reserved. Money Mate Portfolio Suite.</p>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
