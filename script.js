@@ -1,113 +1,534 @@
-/* ==========================================================================
-   1. CENTRAL PORTFOLIO ARCHITECTURE CONFIGURATION
-   ========================================================================== */
-const AppConfig = {
-    brandName: "Money Mate",
-    developer: "Aveena Labs",
-    version: "1.0.0",
-    storageKeys: {
-        theme: "mm_theme_state",
-        recents: "mm_recent_calculators"
-    },
-    calculators: {
-        emi: { title: "EMI Calculator", cat: "loans" },
-        loan: { title: "Loan Balance Analyzer", cat: "loans" },
-        sip: { title: "SIP Wealth Estimator", cat: "investments" },
-        fd: { title: "Fixed Deposit (FD) Tool", cat: "investments" },
-        gst: { title: "GST Tax Calculator", cat: "tax" }
-    }
-};
-
-/* ==========================================================================
-   2. DOM ELEMENT REGISTRY & STATE INITIALIZATION
-   ========================================================================== */
 document.addEventListener("DOMContentLoaded", () => {
-    const body = document.documentElement;
-    const themeToggle = document.getElementById("theme-toggle");
-    const brandLogo = document.getElementById("brand-logo");
-    const homeView = document.getElementById("home-view");
+    /* ==========================================================================
+       1. GLOBAL STATE & SELECTOR CONFIGURATION LAYER
+       ========================================================================== */
+    let activeToolId = null;
+    const historyStack = [];
+
+    // View Components
+    const dashboardView = document.getElementById("dashboard-view");
     const workspaceView = document.getElementById("workspace-view");
-    const breadcrumbHome = document.getElementById("breadcrumb-home");
-    const breadcrumbCurrent = document.getElementById("breadcrumb-current");
-    
-    const calcSearch = document.getElementById("calc-search");
+    const calculatorsGrid = document.getElementById("calculators-root-grid");
+    const searchInput = document.getElementById("calc-search");
     const categoryTabs = document.querySelectorAll(".cat-tab");
-    const toolsGrid = document.getElementById("tools-grid");
-    const recentContainer = document.getElementById("recent-container");
-    const recentChips = document.getElementById("recent-chips");
     
-    const blankState = document.getElementById("output-blank-state");
-    const displayState = document.getElementById("output-display-state");
-    const metricsTarget = document.getElementById("metrics-target");
-    const tableScrollArea = document.getElementById("table-scroll-area");
-    const scheduleTable = document.getElementById("schedule-table");
-    const btnCopyMetrics = document.getElementById("btn-copy-metrics");
-    const btnShareMetrics = document.getElementById("btn-share-metrics");
-    const relatedLinksContainer = document.getElementById("related-links-container");
+    // Recent Tracking Components
+    const recentContainer = document.getElementById("recent-container");
+    const recentChipsWrapper = document.getElementById("recent-chips");
 
-    let coreCurrentTool = null;
-
-    /* ==========================================================================
-       3. PREMIUM THEME MANAGER (DARK / LIGHT EXECUTION)
-       ========================================================================== */
-    const savedTheme = localStorage.getItem(AppConfig.storageKeys.theme) || "light";
-    body.setAttribute("data-theme", savedTheme);
-
-    themeToggle.addEventListener("click", () => {
-        const activeTheme = body.getAttribute("data-theme") === "dark" ? "light" : "dark";
-        body.setAttribute("data-theme", activeTheme);
-        localStorage.setItem(AppConfig.storageKeys.theme, activeTheme);
-    });
+    // Workspace Active Regions
+    const inputContainer = document.getElementById("input-panel-container");
+    const outputContainer = document.getElementById("output-panel-container");
+    const breadcrumbHome = document.getElementById("breadcrumb-home");
+    const breadcrumbActive = document.getElementById("breadcrumb-active");
+    const brandLogo = document.getElementById("brand-logo");
 
     /* ==========================================================================
-       4. CLIENT STATE ENGINE (RECENT MATRIX TRACKING)
+       2. ACTIVE GLOBAL DYNAMIC CURRENCY LAYER
        ========================================================================== */
-    function trackRecentEngagement(calcKey) {
-        let recents = JSON.parse(localStorage.getItem(AppConfig.storageKeys.recents)) || [];
-        recents = recents.filter(item => item !== calcKey);
-        recents.unshift(calcKey);
-        if (recents.length > 4) recents.pop();
-        localStorage.setItem(AppConfig.storageKeys.recents, JSON.stringify(recents));
-        renderRecentChips();
+    let currentCurrencyCode = "INR";
+    let currencyFormatter = new Intl.NumberFormat("en-IN", { style: "currency", currency: "INR", maximumFractionDigits: 0 });
+
+    const currencySelector = document.getElementById("currency-selector");
+    if (currencySelector) {
+        currencySelector.addEventListener("change", (e) => {
+            currentCurrencyCode = e.target.value;
+            const localeMap = { "INR": "en-IN", "USD": "en-US", "EUR": "de-DE", "GBP": "en-GB" };
+            
+            currencyFormatter = new Intl.NumberFormat(localeMap[currentCurrencyCode] || "en-IN", {
+                style: "currency",
+                currency: currentCurrencyCode,
+                maximumFractionDigits: 0
+            });
+            
+            // Re-trigger form calculation live instantly if a calculator is currently open
+            const openForm = workspaceView.querySelector(".calc-panel:not(.hidden) form");
+            if (openForm) {
+                const submitEvent = new Event('submit', { bubbles: true, cancelable: true });
+                openForm.dispatchEvent(submitEvent);
+            }
+        });
+    }
+    /* ==========================================================================
+       3. ENGINE INTERACTIVE MATRIX REGISTRY DEFINITIONS
+       ========================================================================== */
+    const registry = {
+        emi: {
+            title: "EMI Loan Calculator",
+            renderInputs: () => `
+                <div class="calc-panel">
+                    <h2>EMI Loan Calculator</h2>
+                    <form id="form-emi" novalidate>
+                        <div class="input-group">
+                            <label for="emi-amount">Principal Loan Amount</label>
+                            <input type="number" id="emi-amount" required min="1" step="any" placeholder="e.g., 500000">
+                            <span class="error-msg">Please enter a valid amount greater than 0.</span>
+                        </div>
+                        <div class="input-group">
+                            <label for="emi-rate">Annual Interest Rate (%)</label>
+                            <input type="number" id="emi-rate" required min="0.1" max="100" step="any" placeholder="e.g., 8.5">
+                            <span class="error-msg">Please enter an interest rate between 0.1% and 100%.</span>
+                        </div>
+                        <div class="input-group">
+                            <label for="emi-tenure">Tenure Duration</label>
+                            <input type="number" id="emi-tenure" required min="1" max="600" placeholder="e.g., 20">
+                            <span class="error-msg">Please enter a tenure layout value between 1 and 600.</span>
+                        </div>
+                        <div class="radio-toggle-group">
+                            <label class="radio-container">
+                                <input type="radio" name="emi-type" value="years" checked>
+                                <span class="radio-label">Years</span>
+                            </label>
+                            <label class="radio-container">
+                                <input type="radio" name="emi-type" value="months">
+                                <span class="radio-label">Months</span>
+                            </label>
+                        </div>
+                        <div class="form-actions">
+                            <button type="submit" class="btn btn-primary">Calculate EMI</button>
+                        </div>
+                    </form>
+                </div>
+            `,
+            calculate: (formData) => {
+                const amount = parseFloat(formData.get("emi-amount"));
+                const annualRate = parseFloat(formData.get("emi-rate"));
+                const tenureVal = parseFloat(formData.get("emi-tenure"));
+                const type = formData.get("emi-type");
+
+                const totalMonths = (type === "years") ? tenureVal * 12 : tenureVal;
+                const monthlyRate = (annualRate / 12) / 100;
+
+                let emi = 0;
+                if (monthlyRate === 0) {
+                    emi = amount / totalMonths;
+                } else {
+                    emi = amount * monthlyRate * Math.pow(1 + monthlyRate, totalMonths) / (Math.pow(1 + monthlyRate, totalMonths) - 1);
+                }
+
+                const totalRepayment = emi * totalMonths;
+                const totalInterest = totalRepayment - amount;
+
+                let html = `
+                    <div class="metrics-grid">
+                        <div class="metric-item"><div class="metric-label">Monthly EMI</div><div class="metric-val">${currencyFormatter.format(emi)}</div></div>
+                        <div class="metric-item"><div class="metric-label">Principal Amount</div><div class="metric-val">${currencyFormatter.format(amount)}</div></div>
+                        <div class="metric-item"><div class="metric-label">Total Interest Paid</div><div class="metric-val">${currencyFormatter.format(totalInterest)}</div></div>
+                        <div class="metric-item"><div class="metric-label">Total Payment</div><div class="metric-val">${currencyFormatter.format(totalRepayment)}</div></div>
+                    </div>
+                    <div class="table-container">
+                        <table class="data-table">
+                            <thead>
+                                <tr><th>Year</th><th>Principal Component</th><th>Interest Component</th><th>Ending Balance</th></tr>
+                            </thead>
+                            <tbody>
+                `;
+
+                let balance = amount;
+                const loops = Math.ceil(totalMonths / 12);
+                for (let i = 1; i <= loops; i++) {
+                    let yearlyInterest = 0;
+                    let yearlyPrincipal = 0;
+                    for (let m = 0; m < 12; m++) {
+                        if (balance <= 0) break;
+                        const interestComponent = balance * monthlyRate;
+                        let principalComponent = emi - interestComponent;
+                        if (principalComponent > balance) principalComponent = balance;
+                        yearlyInterest += interestComponent;
+                        yearlyPrincipal += principalComponent;
+                        balance -= principalComponent;
+                    }
+                    html += `<tr><td>Year ${i}</td><td>${currencyFormatter.format(yearlyPrincipal)}</td><td>${currencyFormatter.format(yearlyInterest)}</td><td>${currencyFormatter.format(Math.max(0, balance))}</td></tr>`;
+                    if (balance <= 0) break;
+                }
+
+                html += `</tbody></table></div>`;
+                return html;
+            }
+        },
+        sip: {
+            title: "SIP Future Value Calculator",
+            renderInputs: () => `
+                <div class="calc-panel">
+                    <h2>SIP Mutual Fund Calculator</h2>
+                    <form id="form-sip" novalidate>
+                        <div class="input-group">
+                            <label for="sip-investment">Monthly Investment Contribution</label>
+                            <input type="number" id="sip-investment" required min="1" placeholder="e.g., 5000">
+                            <span class="error-msg">Please input a valid amount setup.</span>
+                        </div>
+                        <div class="input-group">
+                            <label for="sip-rate">Expected Return Rate Per Annum (%)</label>
+                            <input type="number" id="sip-rate" required min="0.1" max="50" step="any" placeholder="e.g., 12">
+                            <span class="error-msg">Please adjust returns rate values (0.1% - 50%).</span>
+                        </div>
+                        <div class="input-group">
+                            <label for="sip-years">Investment Period (Years)</label>
+                            <input type="number" id="sip-years" required min="1" max="50" placeholder="e.g., 15">
+                            <span class="error-msg">Enter a valid operational time period (1 - 50 years).</span>
+                        </div>
+                        <div class="form-actions">
+                            <button type="submit" class="btn btn-primary">Project Compounding Future Wealth</button>
+                        </div>
+                    </form>
+                </div>
+            `,
+            calculate: (formData) => {
+                const monthlyContribution = parseFloat(formData.get("sip-investment"));
+                const annualRate = parseFloat(formData.get("sip-rate"));
+                const years = parseFloat(formData.get("sip-years"));
+
+                const totalMonths = years * 12;
+                const monthlyRate = (annualRate / 12) / 100;
+                
+                let futureValue = 0;
+                if (monthlyRate === 0) {
+                    futureValue = monthlyContribution * totalMonths;
+                } else {
+                    futureValue = monthlyContribution * ((Math.pow(1 + monthlyRate, totalMonths) - 1) / monthlyRate) * (1 + monthlyRate);
+                }
+
+                const totalInvested = monthlyContribution * totalMonths;
+                const wealthGain = futureValue - totalInvested;
+
+                let html = `
+                    <div class="metrics-grid">
+                        <div class="metric-item"><div class="metric-label">Estimated Future Value</div><div class="metric-val">${currencyFormatter.format(futureValue)}</div></div>
+                        <div class="metric-item"><div class="metric-label">Total Cash Deposited</div><div class="metric-val">${currencyFormatter.format(totalInvested)}</div></div>
+                        <div class="metric-item"><div class="metric-label">Compounded Wealth Return</div><div class="metric-val">${currencyFormatter.format(wealthGain)}</div></div>
+                    </div>
+                    <div class="table-container">
+                        <table class="data-table">
+                            <thead>
+                                <tr><th>End of Year</th><th>Total Invested Capital</th><th>Compounded Projected Value</th></tr>
+                            </thead>
+                            <tbody>
+                `;
+
+                for (let i = 1; i <= years; i++) {
+                    const monthsActive = i * 12;
+                    let currentYearFV = monthlyContribution * ((Math.pow(1 + monthlyRate, monthsActive) - 1) / monthlyRate) * (1 + monthlyRate);
+                    html += `<tr><td>Year ${i}</td><td>${currencyFormatter.format(monthlyContribution * monthsActive)}</td><td>${currencyFormatter.format(currentYearFV)}</td></tr>`;
+                }
+
+                html += `</tbody></table></div>`;
+                return html;
+            }
+        },
+        fd: {
+            title: "Fixed Deposit Maturity Modeler",
+            renderInputs: () => `
+                <div class="calc-panel">
+                    <h2>Fixed Deposit (FD) Calculator</h2>
+                    <form id="form-fd" novalidate>
+                        <div class="input-group">
+                            <label for="fd-principal">Initial Principal Deposit</label>
+                            <input type="number" id="fd-principal" required min="1" placeholder="e.g., 100000">
+                            <span class="error-msg">Please configure a base principal balance.</span>
+                        </div>
+                        <div class="input-group">
+                            <label for="fd-rate">Rate of Interest (%)</label>
+                            <input type="number" id="fd-rate" required min="0.1" max="30" step="any" placeholder="e.g., 7.1">
+                            <span class="error-msg">Interest scaling input value out of range (0.1% - 30%).</span>
+                        </div>
+                        <div class="input-group">
+                            <label for="fd-years">Duration Tenure (Years)</label>
+                            <input type="number" id="fd-years" required min="1" max="30" placeholder="e.g., 5">
+                            <span class="error-msg">Please specify operational duration framework timelines (1 - 30 years).</span>
+                        </div>
+                        <div class="form-actions">
+                            <button type="submit" class="btn btn-primary">Calculate Maturity Dividends</button>
+                        </div>
+                    </form>
+                </div>
+            `,
+            calculate: (formData) => {
+                const principal = parseFloat(formData.get("fd-principal"));
+                const rate = parseFloat(formData.get("fd-rate"));
+                const years = parseFloat(formData.get("fd-years"));
+
+                const compoundingFrequency = 4; 
+                const maturityValue = principal * Math.pow(1 + (rate / (compoundingFrequency * 100)), compoundingFrequency * years);
+                const interestEarned = maturityValue - principal;
+
+                let html = `
+                    <div class="metrics-grid">
+                        <div class="metric-item"><div class="metric-label">Maturity Value Amount</div><div class="metric-val">${currencyFormatter.format(maturityValue)}</div></div>
+                        <div class="metric-item"><div class="metric-label">Initial Balance Invested</div><div class="metric-val">${currencyFormatter.format(principal)}</div></div>
+                        <div class="metric-item"><div class="metric-label">Total Yield Interest Balance</div><div class="metric-val">${currencyFormatter.format(interestEarned)}</div></div>
+                    </div>
+                    <div class="table-container">
+                        <table class="data-table">
+                            <thead>
+                                <tr><th>Year Frame</th><th>Interest Accumulated</th><th>Ending Account Value</th></tr>
+                            </thead>
+                            <tbody>
+                `;
+
+                for (let i = 1; i <= years; i++) {
+                    const currentYearFV = principal * Math.pow(1 + (rate / (compoundingFrequency * 100)), compoundingFrequency * i);
+                    const currentYearInterest = currentYearFV - principal;
+                    html += `<tr><td>Year ${i}</td><td>${currencyFormatter.format(currentYearInterest)}</td><td>${currencyFormatter.format(currentYearFV)}</td></tr>`;
+                }
+
+                html += `</tbody></table></div>`;
+                return html;
+            }
+        },
+        inflation: {
+            title: "Inflation Degradation Timeline Adjuster",
+            renderInputs: () => `
+                <div class="calc-panel">
+                    <h2>Inflation Impact Calculator</h2>
+                    <form id="form-inflation" novalidate>
+                        <div class="input-group">
+                            <label for="inf-amount">Current Asset Valuation / Capital</label>
+                            <input type="number" id="inf-amount" required min="1" placeholder="e.g., 1000000">
+                            <span class="error-msg">Input parameter configurations require base numbers.</span>
+                        </div>
+                        <div class="input-group">
+                            <label for="inf-rate">Estimated Dynamic Inflation Rate (%)</label>
+                            <input type="number" id="inf-rate" required min="0.1" max="25" step="any" placeholder="e.g., 6">
+                            <span class="error-msg">Enter standard annualized structural indexes framework percentages (0.1% - 25%).</span>
+                        </div>
+                        <div class="input-group">
+                            <label for="inf-years">Timeline (Years Horizon)</label>
+                            <input type="number" id="inf-years" required min="1" max="50" placeholder="e.g., 10">
+                            <span class="error-msg">Set target evaluation horizon range maps (1 - 50 years).</span>
+                        </div>
+                        <div class="form-actions">
+                            <button type="submit" class="btn btn-primary">Process Purchasing Value Drop</button>
+                        </div>
+                    </form>
+                </div>
+            `,
+            calculate: (formData) => {
+                const amount = parseFloat(formData.get("inf-amount"));
+                const rate = parseFloat(formData.get("inf-rate"));
+                const years = parseFloat(formData.get("inf-years"));
+
+                const futurePurchasingPower = amount / Math.pow(1 + (rate / 100), years);
+                const lostPurchasingPower = amount - futurePurchasingPower;
+
+                let html = `
+                    <div class="metrics-grid">
+                        <div class="metric-item"><div class="metric-label">Future Value Equal Real Purchasing Capacity</div><div class="metric-val">${currencyFormatter.format(futurePurchasingPower)}</div></div>
+                        <div class="metric-item"><div class="metric-label">Total Real Cash Wealth Decay</div><div class="metric-val">${currencyFormatter.format(lostPurchasingPower)}</div></div>
+                    </div>
+                    <div class="table-container">
+                        <table class="data-table">
+                            <thead>
+                                <tr><th>Elapsed Year Horizon</th><th>Real Value Purchase Equivalent</th></tr>
+                            </thead>
+                            <tbody>
+                `;
+
+                for (let i = 1; i <= years; i++) {
+                    const currentYearFV = amount / Math.pow(1 + (rate / 100), i);
+                    html += `<tr><td>Year ${i}</td><td>${currencyFormatter.format(currentYearFV)}</td></tr>`;
+                }
+
+                html += `</tbody></table></div>`;
+                return html;
+            }
+        },
+        gst: {
+            title: "GST/Tax Matrix Terminal Engine",
+            renderInputs: () => `
+                <div class="calc-panel">
+                    <h2>GST/Tax Matrix Terminal</h2>
+                    <form id="form-gst" novalidate>
+                        <div class="input-group">
+                            <label for="gst-amount">Transaction Base Cost Value</label>
+                            <input type="number" id="gst-amount" required min="1" placeholder="e.g., 25000">
+                            <span class="error-msg">Please specify operational transaction metrics base configurations.</span>
+                        </div>
+                        <div class="input-group">
+                            <label for="gst-rate">Tax Slab Rate (%)</label>
+                            <select id="gst-rate" name="gst-rate" class="custom-select">
+                                <option value="5">5% Standard Base Slab</option>
+                                <option value="12">12% Secondary Core Product Slab</option>
+                                <option value="18" selected>18% Primary Standard IT Services Slab</option>
+                                <option value="28">28% Premium Luxury Dynamic Ceiling Slab</option>
+                            </select>
+                        </div>
+                        <div class="radio-toggle-group">
+                            <label class="radio-container">
+                                <input type="radio" name="gst-mode" value="exclusive" checked>
+                                <span class="radio-label">GST Exclusive (Add Tax)</span>
+                            </label>
+                            <label class="radio-container">
+                                <input type="radio" name="gst-mode" value="inclusive">
+                                <span class="radio-label">GST Inclusive (Extract Tax)</span>
+                            </label>
+                        </div>
+                        <div class="form-actions">
+                            <button type="submit" class="btn btn-primary">Process Invoice Ledger Parameters</button>
+                        </div>
+                    </form>
+                </div>
+            `,
+            calculate: (formData) => {
+                const amount = parseFloat(formData.get("gst-amount"));
+                const slabRate = parseFloat(formData.get("gst-rate"));
+                const mode = formData.get("gst-mode");
+
+                let taxValue = 0;
+                let finalNetGrossAmount = 0;
+                let baseCostResultVal = 0;
+
+                if (mode === "exclusive") {
+                    taxValue = amount * (slabRate / 100);
+                    finalNetGrossAmount = amount + taxValue;
+                    baseCostResultVal = amount;
+                } else {
+                    baseCostResultVal = amount / (1 + (slabRate / 100));
+                    taxValue = amount - baseCostResultVal;
+                    finalNetGrossAmount = amount;
+                }
+
+                const splitTaxVal = taxValue / 2;
+
+                return `
+                    <div class="metrics-grid">
+                        <div class="metric-item"><div class="metric-label">Total Invoice Cost Value</div><div class="metric-val">${currencyFormatter.format(finalNetGrossAmount)}</div></div>
+                        <div class="metric-item"><div class="metric-label">Raw Net Production Asset Cost</div><div class="metric-val">${currencyFormatter.format(baseCostResultVal)}</div></div>
+                        <div class="metric-item"><div class="metric-label">Total Tax Commitment Value</div><div class="metric-val">${currencyFormatter.format(taxValue)}</div></div>
+                    </div>
+                    <div class="table-container">
+                        <table class="data-table">
+                            <thead><tr><th>Tax Structure Metric Entity</th><th>Ledger Allocation Value</th></tr></thead>
+                            <tbody>
+                                <tr><td>Central CGST Level Distribution Share (50%)</td><td>${currencyFormatter.format(splitTaxVal)}</td></tr>
+                                <tr><td>State SGST Level Distribution Share (50%)</td><td>${currencyFormatter.format(splitTaxVal)}</td></tr>
+                                <tr><td>Gross Aggregate Core Invoiced Ledger Value</td><td>${currencyFormatter.format(finalNetGrossAmount)}</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                `;
+            }
+        }
+    };
+
+    /* ==========================================================================
+       4. INTERACTIVE ROUTING VIEW & WORKSPACE EVENT BUS
+       ========================================================================== */
+    function renderPlaceholderOutput() {
+        outputContainer.innerHTML = `
+            <div class="output-placeholder">
+                <svg class="placeholder-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z"></path></svg>
+                <h3>Computation Matrix Empty</h3>
+                <p>Modify local form parameters variables structural variables and tap execute calculation framework actions.</p>
+            </div>
+        `;
     }
 
-    function renderRecentChips() {
-        const recents = JSON.parse(localStorage.getItem(AppConfig.storageKeys.recents)) || [];
-        if (recents.length === 0) {
-            recentContainer.classList.add("hidden");
-            return;
-        }
-        recentContainer.classList.remove("hidden");
-        recentChips.innerHTML = "";
-        recents.forEach(key => {
-            if (AppConfig.calculators[key]) {
-                const chip = document.createElement("button");
-                chip.className = "recent-chip";
-                chip.innerText = AppConfig.calculators[key].title;
-                chip.addEventListener("click", () => routingSwitch(key));
-                recentChips.appendChild(chip);
-            }
+    function routeToWorkspace(id) {
+        if (!registry[id]) return;
+        activeToolId = id;
+        
+        inputContainer.innerHTML = registry[id].renderInputs();
+        renderPlaceholderOutput();
+        
+        breadcrumbActive.textContent = registry[id].title;
+        dashboardView.classList.add("hidden");
+        workspaceView.classList.remove("hidden");
+        
+        window.scrollTo({ top: 0, behavior: "smooth" });
+        updateRecentListTrack(id);
+        bindFormActionListeners(id);
+    }
+
+    function routeToDashboard() {
+        activeToolId = null;
+        workspaceView.classList.add("hidden");
+        dashboardView.classList.remove("hidden");
+        window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+
+    function bindFormActionListeners(id) {
+        const form = inputContainer.querySelector("form");
+        if (!form) return;
+
+        form.addEventListener("submit", (e) => {
+            e.preventDefault();
+            
+            let formsAreValid = true;
+            const targetRequiredInputsFields = form.querySelectorAll("input[required]");
+            
+            targetRequiredInputsFields.forEach(elementInput => {
+                const parentGroup = elementInput.closest(".input-group");
+                if (!elementInput.checkValidity()) {
+                    formsAreValid = false;
+                    if (parentGroup) parentGroup.classList.add("invalid");
+                } else {
+                    if (parentGroup) parentGroup.classList.remove("invalid");
+                }
+            });
+
+            if (!formsAreValid) return;
+
+            const compiledPayload = new FormData(form);
+            outputContainer.innerHTML = registry[id].calculate(compiledPayload);
+        });
+
+        form.querySelectorAll("input").forEach(field => {
+            field.addEventListener("input", () => {
+                const group = field.closest(".input-group");
+                if (group && field.checkValidity()) group.classList.remove("invalid");
+            });
         });
     }
 
     /* ==========================================================================
-       5. INDEX SEARCH ENGINE & INTERACTIVE FILTER LAYER
+       5. USER BEHAVIOR TRACKING (RECENTS ENGINE)
        ========================================================================== */
-    function processDashboardDiscovery() {
-        const searchQuery = calcSearch.value.toLowerCase().trim();
-        const targetedCategory = document.querySelector(".cat-tab.active").getAttribute("data-category");
-        const cards = toolsGrid.querySelectorAll(".calc-card");
+    function updateRecentListTrack(id) {
+        let activeRecents = JSON.parse(localStorage.getItem("money_mate_recents") || "[]");
+        activeRecents = activeRecents.filter(item => item !== id);
+        activeRecents.unshift(id);
+        activeRecents = activeRecents.slice(0, 4);
+        localStorage.setItem("money_mate_recents", JSON.stringify(activeRecents));
+        renderRecentTrackingChips();
+    }
 
-        cards.forEach(card => {
-            const calcKey = card.getAttribute("data-calc");
-            const cardCategory = card.getAttribute("data-cat");
-            const searchableTitle = AppConfig.calculators[calcKey].title.toLowerCase();
-            const searchableDesc = card.querySelector("p").innerText.toLowerCase();
+    function renderRecentTrackingChips() {
+        const activeRecents = JSON.parse(localStorage.getItem("money_mate_recents") || "[]");
+        if (activeRecents.length === 0) {
+            recentContainer.classList.add("hidden");
+            return;
+        }
 
-            const matchSearch = searchableTitle.includes(searchQuery) || searchableDesc.includes(searchQuery);
-            const matchCategory = (targetedCategory === "all") || (cardCategory === targetedCategory);
+        recentContainer.classList.remove("hidden");
+        recentChipsWrapper.innerHTML = "";
+        
+        activeRecents.forEach(id => {
+            if (!registry[id]) return;
+            const chip = document.createElement("div");
+            chip.className = "recent-chip";
+            chip.textContent = registry[id].title.split(" ")[0] + " Tool";
+            chip.addEventListener("click", () => routeToWorkspace(id));
+            recentChipsWrapper.appendChild(chip);
+        });
+    }
 
-            if (matchSearch && matchCategory) {
+    /* ==========================================================================
+       6. GLOBAL TELEMETRY SEARCH FILTER ENGINE BUS
+       ========================================================================== */
+    function runGlobalGridFilterSearch() {
+        const textCriteria = searchInput.value.toLowerCase().trim();
+        const targetedTabActiveCategory = document.querySelector(".cat-tab.active").getAttribute("data-category");
+        const appCardModulesElements = calculatorsGrid.querySelectorAll(".calc-card");
+
+        appCardModulesElements.forEach(card => {
+            const heading = card.querySelector("h3").textContent.toLowerCase();
+            const detailsText = card.querySelector("p").textContent.toLowerCase();
+            const entityCategory = card.getAttribute("data-category");
+
+            const matchesText = heading.includes(textCriteria) || detailsText.includes(textCriteria);
+            const matchesCategory = (targetedTabActiveCategory === "all") || (entityCategory === targetedTabActiveCategory);
+
+            if (matchesText && matchesCategory) {
                 card.classList.remove("hidden");
             } else {
                 card.classList.add("hidden");
@@ -115,384 +536,42 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 
-    calcSearch.addEventListener("input", processDashboardDiscovery);
-    
+    if (searchInput) searchInput.addEventListener("input", runGlobalGridFilterSearch);
+
     categoryTabs.forEach(tab => {
         tab.addEventListener("click", () => {
             categoryTabs.forEach(t => t.classList.remove("active"));
             tab.classList.add("active");
-            processDashboardDiscovery();
+            runGlobalGridFilterSearch();
         });
     });
+
+    calculatorsGrid.addEventListener("click", (e) => {
+        const launchBtn = e.target.closest(".launch-calc-btn");
+        if (!launchBtn) return;
+        const parentCard = launchBtn.closest(".calc-card");
+        if (parentCard) {
+            const toolIdentifier = parentCard.getAttribute("data-id");
+            routeToWorkspace(toolIdentifier);
+        }
+    });
+
+    if (breadcrumbHome) breadcrumbHome.addEventListener("click", (e) => { e.preventDefault(); routeToDashboard(); });
+    if (brandLogo) brandLogo.addEventListener("click", (e) => { e.preventDefault(); routeToDashboard(); });
 
     /* ==========================================================================
-       6. SYSTEM WORKSPACE ROUTING MANAGEMENT
+       7. MODERN LIGHT/DARK THEME MANAGEMENT TOOGLE MATRIX LAYER
        ========================================================================== */
-    function routingSwitch(calcKey = null) {
-        if (!calcKey) {
-            coreCurrentTool = null;
-            workspaceView.classList.add("hidden");
-            homeView.classList.remove("hidden");
-            window.scrollTo(0, 0);
-            return;
-        }
-
-        coreCurrentTool = calcKey;
-        homeView.classList.add("hidden");
-        workspaceView.classList.remove("hidden");
-        
-        document.querySelectorAll(".calc-panel").forEach(p => p.classList.add("hidden"));
-        document.getElementById(`panel-${calcKey}`).classList.remove("hidden");
-        
-        breadcrumbCurrent.innerText = AppConfig.calculators[calcKey].title;
-        clearReportingState();
-        renderCrossLinking(calcKey);
-        trackRecentEngagement(calcKey);
-        window.scrollTo(0, 0);
-    }
-
-    document.querySelectorAll(".open-calc-btn").forEach(btn => {
-        btn.addEventListener("click", () => routingSwitch(btn.getAttribute("data-target")));
-    });
-
-    breadcrumbHome.addEventListener("click", (e) => { e.preventDefault(); routingSwitch(); });
-    brandLogo.addEventListener("click", (e) => { e.preventDefault(); routingSwitch(); });
-
-    function renderCrossLinking(activeKey) {
-        relatedLinksContainer.innerHTML = "";
-        Object.keys(AppConfig.calculators).forEach(key => {
-            if (key !== activeKey) {
-                const link = document.createElement("button");
-                link.className = "recent-chip";
-                link.innerText = AppConfig.calculators[key].title;
-                link.addEventListener("click", () => routingSwitch(key));
-                relatedLinksContainer.appendChild(link);
-            }
+    const themeToggleBtn = document.getElementById("theme-toggle");
+    if (themeToggleBtn) {
+        themeToggleBtn.addEventListener("click", () => {
+            const targetThemeState = document.documentElement.getAttribute("data-theme") === "light" ? "dark" : "light";
+            document.documentElement.setAttribute("data-theme", targetThemeState);
+            localStorage.setItem("money_mate_theme", targetThemeState);
         });
     }
 
-    function clearReportingState() {
-        blankState.classList.remove("hidden");
-        displayState.classList.add("hidden");
-        tableScrollArea.classList.add("hidden");
-        metricsTarget.innerHTML = "";
-        scheduleTable.querySelector("thead").innerHTML = "";
-        scheduleTable.querySelector("tbody").innerHTML = "";
-    }
-    /* ==========================================================================
-       7. UI PRESENTATION ENGINE & FORM INITIALIZER
-       ========================================================================== */
-    function displayComputedOutputs(metrics, scheduleData = null, columnHeaders = []) {
-        blankState.classList.add("hidden");
-        displayState.classList.remove("hidden");
-        metricsTarget.innerHTML = "";
-
-        metrics.forEach(m => {
-            const wrap = document.createElement("div");
-            wrap.className = "metric-item";
-            wrap.innerHTML = `<div class="metric-label">${m.label}</div><div class="metric-val">${m.value}</div>`;
-            metricsTarget.appendChild(wrap);
-        });
-
-        if (scheduleData && scheduleData.length > 0 && columnHeaders.length > 0) {
-            tableScrollArea.classList.remove("hidden");
-            
-            let theadMarkup = "<tr>";
-            columnHeaders.forEach(h => theadMarkup += `<th>${h}</th>`);
-            theadMarkup += "</tr>";
-            scheduleTable.querySelector("thead").innerHTML = theadMarkup;
-
-            let tbodyMarkup = "";
-            scheduleData.forEach(row => {
-                tbodyMarkup += "<tr>";
-                row.forEach(cell => tbodyMarkup += `<td>${cell}</td>`);
-                tbodyMarkup += "</tr>";
-            });
-            scheduleTable.querySelector("tbody").innerHTML = tbodyMarkup;
-        } else {
-            tableScrollArea.classList.add("hidden");
-        }
-    }
-
-    function checkDOMFormValidity(form) {
-        let isPass = true;
-        form.querySelectorAll("input[required]").forEach(input => {
-            const container = input.closest(".input-group");
-            const parseVal = parseFloat(input.value);
-            const minBoundary = parseFloat(input.getAttribute("min"));
-            const maxBoundary = parseFloat(input.getAttribute("max"));
-
-            let currentValid = true;
-            if (isNaN(parseVal) || parseVal < minBoundary || parseVal > maxBoundary) {
-                currentValid = false;
-                isPass = false;
-            }
-
-            if (!currentValid) {
-                container.classList.add("invalid");
-            } else {
-                container.classList.remove("invalid");
-            }
-        });
-        return isPass;
-    }
-
-    document.querySelectorAll(".reset-btn").forEach(btn => {
-        btn.addEventListener("click", (e) => {
-            const targetedForm = e.target.closest("form");
-            targetedForm.reset();
-            targetedForm.querySelectorAll(".input-group").forEach(g => g.classList.remove("invalid"));
-            clearReportingState();
-        });
-    });
-
-    /* ==========================================================================
-       8. MATH COMPUTATION UTILITIES
-       ========================================================================== */
-    const currencyFormatter = new Intl.NumberFormat("en-US", { style: "currency", currency: "USD" });
-    const percentFormatter = new Intl.NumberFormat("en-US", { style: "percent", minimumFractionDigits: 2 });
-
-    // 1. EMI CALCULATOR ENGINE
-    document.getElementById("form-emi").addEventListener("submit", (e) => {
-        e.preventDefault();
-        if (!checkDOMFormValidity(e.target)) return;
-
-        const p = parseFloat(document.getElementById("emi-principal").value);
-        const rAnnu = parseFloat(document.getElementById("emi-rate").value);
-        const tYrs = parseFloat(document.getElementById("emi-tenure").value);
-
-        const rMth = (rAnnu / 12) / 100;
-        const totalMths = tYrs * 12;
-
-        const emi = (p * rMth * Math.pow(1 + rMth, totalMths)) / (Math.pow(1 + rMth, totalMths) - 1);
-        const totalPayout = emi * totalMths;
-        const aggregateInterest = totalPayout - p;
-
-        const summaryMetrics = [
-            { label: "Monthly EMI Payment", value: currencyFormatter.format(emi) },
-            { label: "Principal Invested", value: currencyFormatter.format(p) },
-            { label: "Total Interest Due", value: currencyFormatter.format(aggregateInterest) },
-            { label: "Total Asset Cost", value: currencyFormatter.format(totalPayout) }
-        ];
-
-        let balance = p;
-        const scheduleMatrix = [];
-        for (let m = 1; m <= totalMths; m++) {
-            const interestPayment = balance * rMth;
-            const principalPayment = emi - interestPayment;
-            balance -= principalPayment;
-            if (balance < 0) balance = 0;
-
-            if (m % 12 === 0 || m === totalMths) {
-                scheduleMatrix.push([
-                    `Year ${Math.ceil(m / 12)}`,
-                    currencyFormatter.format(emi * (m % 12 === 0 ? 12 : (m % 12))),
-                    currencyFormatter.format(principalPayment),
-                    currencyFormatter.format(interestPayment),
-                    currencyFormatter.format(balance)
-                ]);
-            }
-        }
-        displayComputedOutputs(summaryMetrics, scheduleMatrix, ["Timeline Horizon", "Yearly Total", "Principal Share", "Interest Share", "Outstanding Principal"]);
-    });
-
-    // 2. LOAN CALCULATOR ENGINE
-    document.getElementById("form-loan").addEventListener("submit", (e) => {
-        e.preventDefault();
-        if (!checkDOMFormValidity(e.target)) return;
-
-        const p = parseFloat(document.getElementById("loan-principal").value);
-        const rAnnu = parseFloat(document.getElementById("loan-rate").value);
-        const mthsTotal = parseFloat(document.getElementById("loan-duration").value);
-        const rMth = (rAnnu / 12) / 100;
-
-        const monthlyInstallment = (p * rMth * Math.pow(1 + rMth, mthsTotal)) / (Math.pow(1 + rMth, mthsTotal) - 1);
-        const totalGrossCost = monthlyInstallment * mthsTotal;
-        const combinedInterest = totalGrossCost - p;
-
-        const metricsArray = [
-            { label: "Estimated Installment / Mo.", value: currencyFormatter.format(monthlyInstallment) },
-            { label: "Total Principal Core", value: currencyFormatter.format(p) },
-            { label: "Aggregate Interest Weight", value: currencyFormatter.format(combinedInterest) },
-            { label: "Total Financial Commitment", value: currencyFormatter.format(totalGrossCost) }
-        ];
-
-        let balance = p;
-        const linearTable = [];
-        const intervalStep = Math.max(1, Math.floor(mthsTotal / 10));
-
-        for (let i = 1; i <= mthsTotal; i++) {
-            const internalInterest = balance * rMth;
-            const internalPrincipal = monthlyInstallment - internalInterest;
-            balance -= internalPrincipal;
-            if (balance < 0) balance = 0;
-
-            if (i === 1 || i % intervalStep === 0 || i === mthsTotal) {
-                linearTable.push([
-                    `Month ${i}`,
-                    currencyFormatter.format(monthlyInstallment),
-                    currencyFormatter.format(internalPrincipal),
-                    currencyFormatter.format(internalInterest),
-                    currencyFormatter.format(balance)
-                ]);
-            }
-        }
-        displayComputedOutputs(metricsArray, linearTable, ["Interval Point", "Payment Rate", "Principal Comp.", "Interest Comp.", "Remaining Portfolio Balance"]);
-    });
-
-    // 3. SIP CALCULATOR ENGINE
-    document.getElementById("form-sip").addEventListener("submit", (e) => {
-        e.preventDefault();
-        if (!checkDOMFormValidity(e.target)) return;
-
-        const mthInvest = parseFloat(document.getElementById("sip-monthly").value);
-        const annualRate = parseFloat(document.getElementById("sip-rate").value);
-        const lifecycleYrs = parseFloat(document.getElementById("sip-years").value);
-
-        const totalIntervals = lifecycleYrs * 12;
-        const monthlyYieldRate = (annualRate / 12) / 100;
-        const baseInvested = mthInvest * totalIntervals;
-        
-        const compoundTerminalVal = mthInvest * ((Math.pow(1 + monthlyYieldRate, totalIntervals) - 1) / monthlyYieldRate) * (1 + monthlyYieldRate);
-        const wealthAppreciation = compoundTerminalVal - baseInvested;
-
-        const arrayMetrics = [
-            { label: "Aggregate Cash Investment", value: currencyFormatter.format(baseInvested) },
-            { label: "Compounded Interest Accrued", value: currencyFormatter.format(wealthAppreciation) },
-            { label: "Total Wealth Outlook", value: currencyFormatter.format(compoundTerminalVal) }
-        ];
-
-        const pathTable = [];
-        let rollingInvestedSum = 0;
-        for (let y = 1; y <= lifecycleYrs; y++) {
-            rollingInvestedSum += (mthInvest * 12);
-            const currentIntervalCount = y * 12;
-            const pointValue = mthInvest * ((Math.pow(1 + monthlyYieldRate, currentIntervalCount) - 1) / monthlyYieldRate) * (1 + monthlyYieldRate);
-            const pointInterest = pointValue - rollingInvestedSum;
-
-            pathTable.push([
-                `End of Year ${y}`,
-                currencyFormatter.format(rollingInvestedSum),
-                currencyFormatter.format(pointInterest),
-                currencyFormatter.format(pointValue)
-            ]);
-        }
-        displayComputedOutputs(arrayMetrics, pathTable, ["Timeline Milestone", "Cumulative Capital", "Dynamic Compound Wealth", "Aggregate Valuation"]);
-    });
-
-    // 4. FIXED DEPOSIT CALCULATOR ENGINE
-    document.getElementById("form-fd").addEventListener("submit", (e) => {
-        e.preventDefault();
-        if (!checkDOMFormValidity(e.target)) return;
-
-        const principal = parseFloat(document.getElementById("fd-principal").value);
-        const ratePerAnnum = parseFloat(document.getElementById("fd-rate").value);
-        const operationalYears = parseFloat(document.getElementById("fd-years").value);
-
-        const compoundFrequencePerAnnu = 4; 
-        const futureMaturityTarget = principal * Math.pow(1 + (ratePerAnnum / 100 / compoundFrequencePerAnnu), compoundFrequencePerAnnu * operationalYears);
-        const netInterestHarvested = futureMaturityTarget - principal;
-
-        const fdMetrics = [
-            { label: "Principal Asset Allocation", value: currencyFormatter.format(principal) },
-            { label: "Accrued Fixed Interest Yield", value: currencyFormatter.format(netInterestHarvested) },
-            { label: "Terminal Maturity Allocation", value: currencyFormatter.format(futureMaturityTarget) }
-        ];
-
-        const historyMatrix = [];
-        for (let yearStep = 1; yearStep <= operationalYears; yearStep++) {
-            const stepMaturity = principal * Math.pow(1 + (ratePerAnnum / 100 / compoundFrequencePerAnnu), compoundFrequencePerAnnu * yearStep);
-            const stepInterest = stepMaturity - principal;
-            historyMatrix.push([
-                `Year Horizon ${yearStep}`,
-                currencyFormatter.format(principal),
-                currencyFormatter.format(stepInterest),
-                currencyFormatter.format(stepMaturity)
-            ]);
-        }
-        displayComputedOutputs(fdMetrics, historyMatrix, ["Horizon Step", "Base Principal", "Aggregate Yield To Date", "Maturity Valuation Projection"]);
-    });
-
-    // 5. GST TAX CALCULATOR ENGINE
-    document.getElementById("form-gst").addEventListener("submit", (e) => {
-        e.preventDefault();
-        if (!checkDOMFormValidity(e.target)) return;
-
-        const financialAmount = parseFloat(document.getElementById("gst-amount").value);
-        const designatedSlabRate = parseFloat(document.getElementById("gst-slab").value);
-        const directionalTaxMode = document.querySelector('input[name="gst-mode"]:checked').value;
-
-        let derivedNetVal = 0, calculatedTaxWeight = 0, completeGrossVal = 0;
-
-        if (directionalTaxMode === "add") {
-            derivedNetVal = financialAmount;
-            calculatedTaxWeight = (financialAmount * designatedSlabRate) / 100;
-            completeGrossVal = financialAmount + calculatedTaxWeight;
-        } else {
-            completeGrossVal = financialAmount;
-            derivedNetVal = financialAmount / (1 + (designatedSlabRate / 100));
-            calculatedTaxWeight = financialAmount - derivedNetVal;
-        }
-
-        const componentsOutput = [
-            { label: "Net Operation Price (Pre-Tax)", value: currencyFormatter.format(derivedNetVal) },
-            { label: "Calculated Central Tax Burden", value: currencyFormatter.format(calculatedTaxWeight) },
-            { label: "Gross Total Price (Post-Tax)", value: currencyFormatter.format(completeGrossVal) }
-        ];
-
-        const tabularTaxBreakdown = [
-            ["Tax Core Component Base", percentFormatter.format(designatedSlabRate / 100), currencyFormatter.format(calculatedTaxWeight)],
-            ["Central Component Fraction (CGST 50%)", percentFormatter.format((designatedSlabRate / 2) / 100), currencyFormatter.format(calculatedTaxWeight / 2)],
-            ["State Component Fraction (SGST 50%)", percentFormatter.format((designatedSlabRate / 2) / 100), currencyFormatter.format(calculatedTaxWeight / 2)]
-        ];
-        displayComputedOutputs(componentsOutput, tabularTaxBreakdown, ["Structural Tax Partition", "Allocated Fraction Rate", "Calculated Component Value"]);
-    });
-
-    /* ==========================================================================
-       9. SYSTEM METRICS UTILITIES (COPY & SHARE ENGAGEMENT ENGINE)
-       ========================================================================== */
-    btnCopyMetrics.addEventListener("click", () => {
-        const itemDumps = [];
-        displayState.querySelectorAll(".metric-item").forEach(item => {
-            const label = item.querySelector(".metric-label").innerText;
-            const val = item.querySelector(".metric-val").innerText;
-            itemDumps.push(`${label}: ${val}`);
-        });
-        
-        const compiledStringText = `--- ${AppConfig.calculators[coreCurrentTool].title} Output Report (${AppConfig.brandName}) ---\n` + itemDumps.join("\n");
-        
-        navigator.clipboard.writeText(compiledStringText).then(() => {
-            const preservedButtonLabel = btnCopyMetrics.innerText;
-            btnCopyMetrics.innerText = "Copied!";
-            setTimeout(() => btnCopyMetrics.innerText = preservedButtonLabel, 2000);
-        }).catch(() => alert("Clipboard write failed."));
-    });
-
-    btnShareMetrics.addEventListener("click", () => {
-        const structuralShareUrl = `${window.location.origin}${window.location.pathname}?tool=${coreCurrentTool}`;
-        if (navigator.share) {
-            navigator.share({
-                title: `${AppConfig.calculators[coreCurrentTool].title} - ${AppConfig.brandName}`,
-                text: `Execute calculations with ${AppConfig.brandName}.`,
-                url: structuralShareUrl
-            }).catch(() => {});
-        } else {
-            navigator.clipboard.writeText(structuralShareUrl).then(() => {
-                const preservedShareLabel = btnShareMetrics.innerText;
-                btnShareMetrics.innerText = "Link Saved!";
-                setTimeout(() => btnShareMetrics.innerText = preservedShareLabel, 2000);
-            });
-        }
-    });
-
-    /* ==========================================================================
-       10. DEPLOYMENT DEACTION DEEP LINK INITIALIZER
-       ========================================================================== */
-    const runtimeQueryUrlParameters = new URLSearchParams(window.location.search);
-    const deepLinkTargetKey = runtimeQueryUrlParameters.get("tool");
-    if (deepLinkTargetKey && AppConfig.calculators[deepLinkTargetKey]) {
-        routingSwitch(deepLinkTargetKey);
-    } else {
-        renderRecentChips();
-    }
+    const cachedTheme = localStorage.getItem("money_mate_theme") || "dark";
+    document.documentElement.setAttribute("data-theme", cachedTheme);
+    renderRecentTrackingChips();
 });
