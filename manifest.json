@@ -1,6 +1,7 @@
 {
   "short_name": "MoneyMate",
-  "name": "Money Mate Financial Framework",
+  "name": "Money Mate: Free Finance Calculators",
+  "description": "Calculate loan EMIs, mutual fund SIP compounding returns, fixed deposit maturity payouts, GST invoicing splits, and future inflation impact instantly.",
   "icons": [
     {
       "src": "assets/icons/icon-192.png",
@@ -15,9 +16,9 @@
       "purpose": "any maskable"
     }
   ],
-  "start_url": ".",
-  "background_color": "#0f172a",
-  "theme_color": "#0f172a",
+  "start_url": "/niche-finance-tools/?utm_source=pwa",
+  "background_color": "#080c14",
+  "theme_color": "#080c14",
   "display": "standalone",
-  "orientation": "portrait"
+  "orientation": "portrait-primary"
 }
