@@ -1,18 +1,30 @@
 document.addEventListener("DOMContentLoaded", () => {
+    /* ==========================================================================
+       1. GLOBAL STATE & SELECTOR CONFIGURATION LAYER
+       ========================================================================== */
     let activeToolId = null;
+
+    // View Components
     const dashboardView = document.getElementById("dashboard-view");
     const workspaceView = document.getElementById("workspace-view");
     const calculatorsGrid = document.getElementById("calculators-root-grid");
     const searchInput = document.getElementById("calc-search");
     const categoryTabs = document.querySelectorAll(".cat-tab");
+    
+    // Recent Tracking Components
     const recentContainer = document.getElementById("recent-container");
     const recentChipsWrapper = document.getElementById("recent-chips");
+
+    // Workspace Active Regions
     const inputContainer = document.getElementById("input-panel-container");
     const outputContainer = document.getElementById("output-panel-container");
     const breadcrumbHome = document.getElementById("breadcrumb-home");
     const breadcrumbActive = document.getElementById("breadcrumb-active");
     const brandLogo = document.getElementById("brand-logo");
 
+    /* ==========================================================================
+       2. ACTIVE GLOBAL DYNAMIC CURRENCY LAYER
+       ========================================================================== */
     let currentCurrencyCode = "INR";
     let currencyFormatter = new Intl.NumberFormat("en-IN", { style: "currency", currency: "INR", maximumFractionDigits: 0 });
 
@@ -21,11 +33,13 @@ document.addEventListener("DOMContentLoaded", () => {
         currencySelector.addEventListener("change", (e) => {
             currentCurrencyCode = e.target.value;
             const localeMap = { "INR": "en-IN", "USD": "en-US", "EUR": "de-DE", "GBP": "en-GB" };
+            
             currencyFormatter = new Intl.NumberFormat(localeMap[currentCurrencyCode] || "en-IN", {
                 style: "currency",
                 currency: currentCurrencyCode,
                 maximumFractionDigits: 0
             });
+            
             const openForm = workspaceView.querySelector(".calc-panel:not(.hidden) form");
             if (openForm) {
                 const submitEvent = new Event('submit', { bubbles: true, cancelable: true });
@@ -34,6 +48,9 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 
+    /* ==========================================================================
+       3. ENGINE INTERACTIVE MATRIX REGISTRY DEFINITIONS
+       ========================================================================== */
     const registry = {
         emi: {
             title: "EMI Loan Calculator",
@@ -44,17 +61,17 @@ document.addEventListener("DOMContentLoaded", () => {
                         <div class="input-group">
                             <label for="emi-amount">Principal Loan Amount</label>
                             <input type="number" id="emi-amount" required min="1" step="any" placeholder="e.g., 500000">
-                            <span class="error-msg">Please enter a valid amount.</span>
+                            <span class="error-msg">Please enter a valid loan amount.</span>
                         </div>
                         <div class="input-group">
                             <label for="emi-rate">Annual Interest Rate (%)</label>
                             <input type="number" id="emi-rate" required min="0.1" max="100" step="any" placeholder="e.g., 8.5">
-                            <span class="error-msg">Please enter a valid rate.</span>
+                            <span class="error-msg">Please enter an interest rate between 0.1% and 100%.</span>
                         </div>
                         <div class="input-group">
                             <label for="emi-tenure">Tenure Duration</label>
                             <input type="number" id="emi-tenure" required min="1" max="600" placeholder="e.g., 20">
-                            <span class="error-msg">Please enter a valid tenure.</span>
+                            <span class="error-msg">Please enter a duration value between 1 and 600.</span>
                         </div>
                         <div class="radio-toggle-group">
                             <label class="radio-container">
@@ -134,17 +151,17 @@ document.addEventListener("DOMContentLoaded", () => {
                         <div class="input-group">
                             <label for="sip-investment">Monthly Investment Contribution</label>
                             <input type="number" id="sip-investment" required min="1" placeholder="e.g., 5000">
-                            <span class="error-msg">Please enter a valid amount.</span>
+                            <span class="error-msg">Please enter a valid periodic allocation amount.</span>
                         </div>
                         <div class="input-group">
                             <label for="sip-rate">Expected Return Rate Per Annum (%)</label>
                             <input type="number" id="sip-rate" required min="0.1" max="50" step="any" placeholder="e.g., 12">
-                            <span class="error-msg">Please enter a valid rate.</span>
+                            <span class="error-msg">Please enter an expected rate between 0.1% and 50%.</span>
                         </div>
                         <div class="input-group">
                             <label for="sip-years">Investment Period (Years)</label>
                             <input type="number" id="sip-years" required min="1" max="50" placeholder="e.g., 15">
-                            <span class="error-msg">Please enter a valid year parameter.</span>
+                            <span class="error-msg">Please enter a duration tenure between 1 and 50 years.</span>
                         </div>
                         <div class="form-actions">
                             <button type="submit" class="btn btn-primary">Project Wealth</button>
@@ -200,17 +217,17 @@ document.addEventListener("DOMContentLoaded", () => {
                         <div class="input-group">
                             <label for="fd-principal">Initial Principal Deposit</label>
                             <input type="number" id="fd-principal" required min="1" placeholder="e.g., 100000">
-                            <span class="error-msg">Please configure a base principal balance.</span>
+                            <span class="error-msg">Please enter a valid starting balance.</span>
                         </div>
                         <div class="input-group">
                             <label for="fd-rate">Rate of Interest (%)</label>
                             <input type="number" id="fd-rate" required min="0.1" max="30" step="any" placeholder="e.g., 7.1">
-                            <span class="error-msg">Interest rate invalid.</span>
+                            <span class="error-msg">Please set an interest layout between 0.1% and 30%.</span>
                         </div>
                         <div class="input-group">
                             <label for="fd-years">Duration Tenure (Years)</label>
                             <input type="number" id="fd-years" required min="1" max="30" placeholder="e.g., 5">
-                            <span class="error-msg">Please specify duration.</span>
+                            <span class="error-msg">Please target a timeline tenure between 1 and 30 years.</span>
                         </div>
                         <div class="form-actions">
                             <button type="submit" class="btn btn-primary">Calculate Maturity</button>
@@ -249,7 +266,7 @@ document.addEventListener("DOMContentLoaded", () => {
             }
         },
         inflation: {
-            title: "Inflation Degradation Horizon Map",
+            title: "Inflation Impact Adjustment",
             renderInputs: () => `
                 <div class="calc-panel">
                     <h2>Inflation Impact Calculator</h2>
@@ -257,17 +274,17 @@ document.addEventListener("DOMContentLoaded", () => {
                         <div class="input-group">
                             <label for="inf-amount">Current Asset Valuation / Capital</label>
                             <input type="number" id="inf-amount" required min="1" placeholder="e.g., 1000000">
-                            <span class="error-msg">Input parameter configurations require base numbers.</span>
+                            <span class="error-msg">Please set a functional baseline asset valuation figure.</span>
                         </div>
                         <div class="input-group">
                             <label for="inf-rate">Estimated Dynamic Inflation Rate (%)</label>
                             <input type="number" id="inf-rate" required min="0.1" max="25" step="any" placeholder="e.g., 6">
-                            <span class="error-msg">Enter standard annualized framework percentages.</span>
+                            <span class="error-msg">Enter an annualized rate scaling factor percentage between 0.1% and 25%.</span>
                         </div>
                         <div class="input-group">
                             <label for="inf-years">Timeline (Years Horizon)</label>
                             <input type="number" id="inf-years" required min="1" max="50" placeholder="e.g., 10">
-                            <span class="error-msg">Set target evaluation horizon maps.</span>
+                            <span class="error-msg">Set an evaluation horizon period between 1 and 50 years.</span>
                         </div>
                         <div class="form-actions">
                             <button type="submit" class="btn btn-primary">Process Value Drop</button>
@@ -311,7 +328,7 @@ document.addEventListener("DOMContentLoaded", () => {
                         <div class="input-group">
                             <label for="gst-amount">Transaction Base Cost Value</label>
                             <input type="number" id="gst-amount" required min="1" placeholder="e.g., 25000">
-                            <span class="error-msg">Please specify transaction base configurations.</span>
+                            <span class="error-msg">Please specify operational transactional metric cost structures.</span>
                         </div>
                         <div class="input-group">
                             <label for="gst-rate">Tax Slab Rate (%)</label>
