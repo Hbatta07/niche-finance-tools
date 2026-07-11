@@ -1,0 +1,12 @@
+# Crawl configuration rules for Money Mate
+User-agent: *
+Allow: /
+Allow: /index.html
+Allow: /style.css
+Allow: /script.js
+
+# Prevent indexing of service worker core files
+Disallow: /sw.js
+
+# Link to sitemap
+Sitemap: https://yourdomain.com/sitemap.xml
