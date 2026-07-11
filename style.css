@@ -1,46 +1,46 @@
 /* ==========================================================================
-   1. DESIGN SYSTEM & TOKENS (Light Mode Default)
+   1. PREMIUM DESIGN TOKENS (Modern SaaS Architecture)
    ========================================================================== */
 :root {
+    --bg-primary: #080c14;
+    --bg-secondary: #0f1626;
+    --bg-surface: #17223b;
+    --text-primary: #f8fafc;
+    --text-secondary: #94a3b8;
+    --text-muted: #475569;
+    --accent: #10b981; /* Premium Emerald Success Green */
+    --accent-hover: #059669;
+    --border-color: #1e293b;
+    --success: #10b981;
+    --error: #ef4444;
+    --radius-sm: 8px;
+    --radius-md: 16px;
+    --radius-lg: 24px;
+    --shadow-sm: 0 4px 6px -1px rgba(0, 0, 0, 0.2);
+    --shadow-md: 0 12px 24px -4px rgba(0, 0, 0, 0.4);
+    --shadow-lg: 0 24px 48px -8px rgba(0, 0, 0, 0.6);
+    --transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    --font-sans: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+}
+
+/* Smooth Interactive Override Layer for Light Mode toggles */
+[data-theme="light"] {
     --bg-primary: #f8fafc;
     --bg-secondary: #ffffff;
     --bg-surface: #f1f5f9;
     --text-primary: #0f172a;
     --text-secondary: #475569;
     --text-muted: #94a3b8;
-    --accent: #0284c7;
-    --accent-hover: #0369a1;
+    --accent: #059669;
+    --accent-hover: #047857;
     --border-color: #e2e8f0;
-    --success: #16a34a;
-    --error: #dc2626;
-    --radius-sm: 6px;
-    --radius-md: 12px;
-    --radius-lg: 16px;
     --shadow-sm: 0 1px 3px rgba(0,0,0,0.05);
-    --shadow-md: 0 4px 6px -1px rgba(0,0,0,0.05), 0 2px 4px -1px rgba(0,0,0,0.03);
-    --shadow-lg: 0 10px 15px -3px rgba(0,0,0,0.05), 0 4px 6px -2px rgba(0,0,0,0.02);
-    --transition: all 0.2s ease-in-out;
-    --font-sans: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-}
-
-/* Dark Mode Theme Tokens Override */
-[data-theme="dark"] {
-    --bg-primary: #0f172a;
-    --bg-secondary: #1e293b;
-    --bg-surface: #334155;
-    --text-primary: #f8fafc;
-    --text-secondary: #cbd5e1;
-    --text-muted: #64748b;
-    --accent: #38bdf8;
-    --accent-hover: #7dd3fc;
-    --border-color: #334155;
-    --shadow-sm: 0 1px 3px rgba(0,0,0,0.2);
-    --shadow-md: 0 4px 6px -1px rgba(0,0,0,0.2), 0 2px 4px -1px rgba(0,0,0,0.1);
-    --shadow-lg: 0 10px 15px -3px rgba(0,0,0,0.3), 0 4px 6px -2px rgba(0,0,0,0.15);
+    --shadow-md: 0 4px 12px rgba(0,0,0,0.05);
+    --shadow-lg: 0 10px 24px rgba(0,0,0,0.05);
 }
 
 /* ==========================================================================
-   2. CORE RESET & BASE STYLES
+   2. CORE BASE STYLES
    ========================================================================== */
 *, *::before, *::after {
     box-sizing: border-box;
@@ -53,7 +53,7 @@ html, body {
     font-family: var(--font-sans);
     background-color: var(--bg-primary);
     color: var(--text-primary);
-    line-height: 1.5;
+    line-height: 1.6;
     -webkit-font-smoothing: antialiased;
     transition: background-color 0.3s ease, color 0.3s ease;
 }
@@ -64,7 +64,7 @@ body {
 }
 
 /* ==========================================================================
-   3. LAYOUT & SITE SHELL
+   3. SITE HEADER SHELL
    ========================================================================== */
 .site-header {
     background-color: var(--bg-secondary);
@@ -72,27 +72,34 @@ body {
     position: sticky;
     top: 0;
     z-index: 100;
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
 }
 
 .header-container {
     max-width: 1200px;
     margin: 0 auto;
-    padding: 1rem;
+    padding: 1.25rem 1rem;
     display: flex;
     justify-content: space-between;
     align-items: center;
 }
 
 .logo {
-    font-size: 1.25rem;
-    font-weight: 700;
+    font-size: 1.5rem;
+    font-weight: 800;
     color: var(--text-primary);
     text-decoration: none;
-    letter-spacing: -0.025em;
+    letter-spacing: -0.03em;
 }
 
 .logo-dot {
     color: var(--accent);
+}
+
+.header-actions {
+    display: flex;
+    align-items: center;
 }
 
 .icon-btn {
@@ -100,7 +107,7 @@ body {
     border: none;
     cursor: pointer;
     color: var(--text-secondary);
-    padding: 0.5rem;
+    padding: 0.6rem;
     border-radius: var(--radius-sm);
     display: flex;
     align-items: center;
@@ -122,67 +129,46 @@ body {
     width: 100%;
     max-width: 1200px;
     margin: 0 auto;
-    padding: 1rem;
+    padding: 1.5rem 1rem;
 }
 
 /* ==========================================================================
-   4. ADSENSE LAYOUT COMPLIANCE (Prevents Layout Shift)
+   4. AD PLACEHOLDER REMOVAL (Completely Hidden Until Next Month)
    ========================================================================== */
 .ads-wrapper {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    margin: 1.5rem 0;
-    width: 100%;
-}
-
-.adsense-placeholder {
-    background-color: var(--bg-secondary);
-    border: 1px dashed var(--border-color);
-    border-radius: var(--radius-md);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    width: 100%;
-    min-height: 90px;
-    position: relative;
-}
-
-.ads-top .adsense-placeholder { max-width: 728px; min-height: 90px; }
-.ads-bottom .adsense-placeholder { max-width: 100%; min-height: 250px; }
-
-.ads-label {
-    font-size: 0.75rem;
-    color: var(--text-muted);
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
+    display: none !important; /* Forces layout removal to hide clean blocks completely */
 }
 
 /* ==========================================================================
-   5. HOMEPAGE & SEARCH ARCHITECTURE
+   5. INTERACTIVE DASHBOARD & SEARCH FILTER BAR
    ========================================================================== */
 .section-hero {
     text-align: center;
-    margin: 1.5rem 0 2rem 0;
+    margin: 2rem 0 2.5rem 0;
 }
 
 .section-hero h1 {
-    font-size: 1.75rem;
+    font-size: 2.25rem;
     font-weight: 800;
-    letter-spacing: -0.03em;
-    margin-bottom: 0.5rem;
+    letter-spacing: -0.04em;
+    margin-bottom: 0.75rem;
+    background: linear-gradient(to right, var(--text-primary), var(--text-secondary));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
 }
 
 .section-hero p {
     color: var(--text-secondary);
-    font-size: 0.95rem;
+    font-size: 1.05rem;
+    max-width: 600px;
+    margin: 0 auto;
 }
 
 .search-filter-bar {
     display: flex;
     flex-direction: column;
-    gap: 1rem;
-    margin-bottom: 2rem;
+    gap: 1.25rem;
+    margin-bottom: 2.5rem;
 }
 
 .search-input-wrapper {
@@ -192,17 +178,17 @@ body {
 
 .search-icon {
     position: absolute;
-    left: 1rem;
+    left: 1.25rem;
     top: 50%;
     transform: translateY(-50%);
-    width: 18px;
-    height: 18px;
-    color: var(--text-muted);
+    width: 20px;
+    height: 20px;
+    color: var(--text-secondary);
 }
 
 #calc-search {
     width: 100%;
-    padding: 0.75rem 1rem 0.75rem 2.7rem;
+    padding: 1rem 1rem 1rem 3.25rem;
     border: 1px solid var(--border-color);
     border-radius: var(--radius-md);
     background-color: var(--bg-secondary);
@@ -210,16 +196,17 @@ body {
     font-size: 1rem;
     outline: none;
     transition: var(--transition);
+    box-shadow: var(--shadow-sm);
 }
 
 #calc-search:focus {
     border-color: var(--accent);
-    box-shadow: 0 0 0 3px rgba(2, 132, 199, 0.15);
+    box-shadow: 0 0 0 4px rgba(16, 185, 129, 0.15);
 }
 
 .category-tabs {
     display: flex;
-    gap: 0.5rem;
+    gap: 0.6rem;
     overflow-x: auto;
     padding-bottom: 0.25rem;
     scrollbar-width: none;
@@ -231,10 +218,11 @@ body {
     background-color: var(--bg-secondary);
     border: 1px solid var(--border-color);
     color: var(--text-secondary);
-    padding: 0.5rem 1rem;
+    padding: 0.6rem 1.25rem;
     border-radius: var(--radius-sm);
     cursor: pointer;
-    font-size: 0.875rem;
+    font-size: 0.9rem;
+    font-weight: 600;
     white-space: nowrap;
     transition: var(--transition);
 }
@@ -245,27 +233,29 @@ body {
     border-color: var(--accent);
 }
 
-/* Recent Used Row */
+/* Recent Badges */
 .recent-row {
     display: flex;
     align-items: center;
-    gap: 0.75rem;
-    margin-bottom: 1.5rem;
+    gap: 1rem;
+    margin-bottom: 2rem;
     background-color: var(--bg-secondary);
-    padding: 0.5rem 1rem;
+    padding: 0.75rem 1.25rem;
     border-radius: var(--radius-md);
     border: 1px solid var(--border-color);
 }
 
 .recent-title {
     font-size: 0.85rem;
-    font-weight: 600;
+    font-weight: 700;
     color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
 }
 
 .recent-chips-wrapper {
     display: flex;
-    gap: 0.5rem;
+    gap: 0.6rem;
     overflow-x: auto;
 }
 
@@ -273,67 +263,88 @@ body {
     background-color: var(--bg-surface);
     border: 1px solid var(--border-color);
     color: var(--text-primary);
-    padding: 0.25rem 0.75rem;
+    padding: 0.4rem 1rem;
     border-radius: var(--radius-sm);
-    font-size: 0.75rem;
+    font-size: 0.8rem;
+    font-weight: 500;
     cursor: pointer;
     transition: var(--transition);
+    white-space: nowrap;
 }
 
 .recent-chip:hover {
     border-color: var(--accent);
+    background-color: rgba(16, 185, 129, 0.05);
 }
 
-/* Calculators Grid Layout */
+/* Niche Tools App Grid */
 .calculators-grid {
     display: grid;
     grid-template-columns: 1fr;
-    gap: 1rem;
+    gap: 1.5rem;
 }
 
 .calc-card {
     background-color: var(--bg-secondary);
     border: 1px solid var(--border-color);
-    border-radius: var(--radius-md);
-    padding: 1.5rem;
+    border-radius: var(--radius-lg);
+    padding: 2rem;
     display: flex;
     flex-direction: column;
     box-shadow: var(--shadow-sm);
     transition: var(--transition);
+    position: relative;
+    overflow: hidden;
+}
+
+.calc-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 4px;
+    height: 100%;
+    background-color: transparent;
+    transition: var(--transition);
 }
 
 .calc-card:hover {
-    transform: translateY(-2px);
-    box-shadow: var(--shadow-md);
-    border-color: var(--accent);
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-lg);
+    border-color: rgba(16, 185, 129, 0.3);
+}
+
+.calc-card:hover::before {
+    background-color: var(--accent);
 }
 
 .calc-card h3 {
-    font-size: 1.15rem;
-    margin-bottom: 0.5rem;
+    font-size: 1.35rem;
+    margin-bottom: 0.6rem;
     font-weight: 700;
+    letter-spacing: -0.02em;
 }
 
 .calc-card p {
-    font-size: 0.9rem;
+    font-size: 0.95rem;
     color: var(--text-secondary);
-    margin-bottom: 1.5rem;
+    margin-bottom: 2rem;
     flex: 1;
 }
 
 /* ==========================================================================
-   6. CALCULATOR WORKSPACE LAYOUT
+   6. CALCULATOR UTILITY WORKSPACE INTERFACE
    ========================================================================== */
 .workspace-layout {
     display: grid;
     grid-template-columns: 1fr;
-    gap: 1.5rem;
+    gap: 2rem;
     align-items: start;
-    margin-top: 1rem;
+    margin-top: 1.5rem;
 }
 
 .breadcrumb-nav {
-    margin-bottom: 1rem;
+    margin-bottom: 1.5rem;
 }
 
 .breadcrumbs {
@@ -347,42 +358,42 @@ body {
 .breadcrumbs a {
     color: var(--text-secondary);
     text-decoration: none;
+    font-weight: 500;
 }
 
-.breadcrumbs a:hover { text-decoration: underline; }
+.breadcrumbs a:hover { color: var(--accent); }
 
 .tool-interface-card, .tool-output-card {
     background-color: var(--bg-secondary);
     border: 1px solid var(--border-color);
     border-radius: var(--radius-lg);
-    padding: 1.5rem;
-    box-shadow: var(--shadow-sm);
+    padding: 2rem;
+    box-shadow: var(--shadow-md);
 }
 
-/* Forms Framework Architecture */
 .calc-panel h2 {
-    font-size: 1.5rem;
-    margin-bottom: 1.5rem;
-    font-weight: 700;
-    letter-spacing: -0.02em;
+    font-size: 1.75rem;
+    margin-bottom: 2rem;
+    font-weight: 800;
+    letter-spacing: -0.03em;
 }
 
 .input-group {
     display: flex;
     flex-direction: column;
-    gap: 0.375rem;
-    margin-bottom: 1.25rem;
+    gap: 0.5rem;
+    margin-bottom: 1.5rem;
 }
 
 .input-group label {
-    font-size: 0.875rem;
-    font-weight: 600;
+    font-size: 0.9rem;
+    font-weight: 700;
     color: var(--text-secondary);
 }
 
 .input-group input, .custom-select {
     width: 100%;
-    padding: 0.75rem;
+    padding: 0.85rem 1.25rem;
     border: 1px solid var(--border-color);
     border-radius: var(--radius-sm);
     background-color: var(--bg-primary);
@@ -394,53 +405,55 @@ body {
 
 .input-group input:focus, .custom-select:focus {
     border-color: var(--accent);
+    box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1);
 }
 
 .input-group.invalid input {
     border-color: var(--error);
+    background-color: rgba(239, 68, 68, 0.02);
 }
 
 .error-msg {
     color: var(--error);
-    font-size: 0.75rem;
+    font-size: 0.8rem;
+    font-weight: 500;
     display: none;
 }
 
-.input-group.invalid .error-msg {
-    display: block;
-}
+.input-group.invalid .error-msg { display: block; }
 
 .radio-toggle-group {
     display: flex;
     flex-direction: column;
-    gap: 0.75rem;
-    margin: 1.25rem 0;
+    gap: 1rem;
+    margin: 1.5rem 0;
 }
 
 .radio-container {
     display: flex;
     align-items: center;
-    gap: 0.5rem;
+    gap: 0.6rem;
     cursor: pointer;
 }
 
 .radio-label {
-    font-size: 0.9rem;
+    font-size: 0.95rem;
+    font-weight: 600;
     color: var(--text-secondary);
 }
 
 .form-actions {
     display: flex;
-    gap: 1rem;
-    margin-top: 1.5rem;
+    gap: 1.25rem;
+    margin-top: 2rem;
 }
 
-/* Buttons Framework */
+/* Premium Component Buttons */
 .btn {
     font-family: inherit;
-    font-size: 0.95rem;
-    font-weight: 600;
-    padding: 0.75rem 1.5rem;
+    font-size: 1rem;
+    font-weight: 700;
+    padding: 0.9rem 1.75rem;
     border-radius: var(--radius-sm);
     border: 1px solid transparent;
     cursor: pointer;
@@ -451,16 +464,16 @@ body {
 }
 
 .btn-primary { background-color: var(--accent); color: #ffffff; }
-.btn-primary:hover { background-color: var(--accent-hover); }
+.btn-primary:hover { background-color: var(--accent-hover); transform: translateY(-1px); }
 .btn-secondary { background-color: var(--bg-surface); color: var(--text-primary); border-color: var(--border-color); }
 .btn-secondary:hover { background-color: var(--border-color); }
 .btn-neutral { background-color: transparent; color: var(--text-secondary); border-color: var(--border-color); }
 .btn-neutral:hover { background-color: var(--bg-surface); color: var(--text-primary); }
 
-.btn-sm { padding: 0.5rem 1rem; font-size: 0.85rem; width: auto; }
+.btn-sm { padding: 0.6rem 1.25rem; font-size: 0.85rem; width: auto; }
 
 /* ==========================================================================
-   7. OUTPUTS ENGINE & SCHEDULE PRESENTATION
+   7. OUTPUT COMPUTATION PRESENTER LAYER
    ========================================================================== */
 .output-placeholder {
     display: flex;
@@ -468,151 +481,132 @@ body {
     align-items: center;
     justify-content: center;
     text-align: center;
-    min-height: 250px;
-    color: var(--text-muted);
+    min-height: 300px;
+    color: var(--text-secondary);
     padding: 2rem;
 }
 
 .placeholder-icon {
-    width: 48px;
-    height: 48px;
-    margin-bottom: 1rem;
+    width: 56px;
+    height: 56px;
+    margin-bottom: 1.25rem;
+    color: var(--text-muted);
     stroke-width: 1.5;
 }
 
-.output-placeholder p { font-size: 0.9rem; max-width: 320px; }
+.output-placeholder p { font-size: 0.95rem; max-width: 340px; }
 
 .metrics-grid {
     display: grid;
     grid-template-columns: 1fr;
-    gap: 1rem;
-    margin-bottom: 1.5rem;
+    gap: 1.25rem;
+    margin-bottom: 2rem;
 }
 
 .metric-item {
     background-color: var(--bg-primary);
     border: 1px solid var(--border-color);
     border-radius: var(--radius-md);
-    padding: 1rem;
+    padding: 1.25rem 1.5rem;
 }
 
 .metric-label {
     font-size: 0.8rem;
     color: var(--text-secondary);
-    font-weight: 600;
+    font-weight: 700;
     text-transform: uppercase;
+    letter-spacing: 0.05em;
 }
 
 .metric-val {
-    font-size: 1.5rem;
-    font-weight: 700;
+    font-size: 1.75rem;
+    font-weight: 800;
     color: var(--accent);
-    margin-top: 0.25rem;
+    margin-top: 0.35rem;
+    letter-spacing: -0.02em;
 }
 
 .output-actions {
     display: flex;
-    gap: 0.5rem;
-    margin-bottom: 1.5rem;
+    gap: 0.75rem;
+    margin-bottom: 2rem;
 }
 
 .table-container {
     width: 100%;
     overflow-x: auto;
-    margin-top: 1.5rem;
+    margin-top: 2rem;
     border: 1px solid var(--border-color);
     border-radius: var(--radius-md);
+    box-shadow: var(--shadow-sm);
 }
 
 .data-table {
     width: 100%;
     border-collapse: collapse;
     text-align: left;
-    font-size: 0.85rem;
+    font-size: 0.9rem;
 }
 
 .data-table th, .data-table td {
-    padding: 0.75rem 1rem;
+    padding: 1rem 1.25rem;
     border-bottom: 1px solid var(--border-color);
 }
 
 .data-table th {
-    background-color: var(--bg-primary);
-    font-weight: 600;
-    color: var(--text-secondary);
+    background-color: var(--bg-surface);
+    font-weight: 700;
+    color: var(--text-primary);
 }
 
 .data-table tr:last-child td { border-bottom: none; }
+.data-table tbody tr:hover { background-color: rgba(255,255,255,0.01); }
 
 /* ==========================================================================
-   8. SEO UNDERPINNINGS & ACCORDIONS
+   8. FOOTER AND SEO REVIEWS
    ========================================================================== */
-.cross-link-section {
-    margin: 2.5rem 0;
-}
-
-.cross-link-section h4 {
-    font-size: 1rem;
-    margin-bottom: 0.75rem;
-    font-weight: 700;
-}
-
-.cross-links-grid {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.5rem;
-}
-
-.seo-knowledge-base { margin: 3rem 0 1rem 0; }
-.section-divider { border: 0; border-top: 1px solid var(--border-color); margin-bottom: 2rem; }
-.seo-knowledge-base h2 { font-size: 1.35rem; margin-bottom: 1.25rem; font-weight: 700; }
+.cross-link-section { margin: 3rem 0; }
+.cross-link-section h4 { font-size: 1.1rem; margin-bottom: 1rem; font-weight: 800; }
+.seo-knowledge-base { margin: 4rem 0 2rem 0; }
+.section-divider { border: 0; border-top: 1px solid var(--border-color); margin-bottom: 2.5rem; }
+.seo-knowledge-base h2 { font-size: 1.6rem; margin-bottom: 1.5rem; font-weight: 800; }
 
 .faq-accordion details {
     background-color: var(--bg-secondary);
     border: 1px solid var(--border-color);
     border-radius: var(--radius-md);
-    margin-bottom: 0.75rem;
-    padding: 1rem;
+    margin-bottom: 1rem;
+    padding: 1.25rem;
+    transition: var(--transition);
 }
 
-.faq-accordion summary {
-    font-weight: 600;
-    cursor: pointer;
-    outline: none;
-    font-size: 0.95rem;
-}
-
-.faq-accordion p {
-    margin-top: 0.5rem;
-    font-size: 0.9rem;
-    color: var(--text-secondary);
-}
+.faq-accordion summary { font-weight: 700; cursor: pointer; outline: none; font-size: 1.05rem; }
+.faq-accordion p { margin-top: 0.75rem; font-size: 0.95rem; color: var(--text-secondary); }
 
 .site-footer {
     text-align: center;
-    padding: 2rem 1rem;
-    font-size: 0.8rem;
-    color: var(--text-muted);
+    padding: 2.5rem 1rem;
+    font-size: 0.85rem;
+    color: var(--text-secondary);
     border-top: 1px solid var(--border-color);
     background-color: var(--bg-secondary);
 }
 
 /* ==========================================================================
-   9. RESPONSIVE DESIGN BREAKPOINTS (Tablet / Desktop Expansion)
+   9. MEDIA EXPANSIONS
    ========================================================================== */
 @media (min-width: 640px) {
     .calculators-grid { grid-template-columns: repeat(2, 1fr); }
     .search-filter-bar { flex-direction: row; align-items: center; }
     .search-input-wrapper { flex: 1; }
-    .radio-toggle-group { flex-direction: row; gap: 1.5rem; }
+    .radio-toggle-group { flex-direction: row; gap: 2rem; }
 }
 
 @media (min-width: 960px) {
     .calculators-grid { grid-template-columns: repeat(3, 1fr); }
-    .workspace-layout { grid-template-columns: 1.2fr 1.8fr; }
+    .workspace-layout { grid-template-columns: 1.25fr 1.75fr; }
     .metrics-grid { grid-template-columns: repeat(2, 1fr); }
-    .section-hero h1 { font-size: 2.25rem; }
+    .section-hero h1 { font-size: 2.75rem; }
 }
 
-/* Utility State Managers */
 .hidden { display: none !important; }
