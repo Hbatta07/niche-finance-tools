@@ -1,31 +1,18 @@
 document.addEventListener("DOMContentLoaded", () => {
-    /* ==========================================================================
-       1. GLOBAL STATE & SELECTOR CONFIGURATION LAYER
-       ========================================================================== */
     let activeToolId = null;
-    const historyStack = [];
-
-    // View Components
     const dashboardView = document.getElementById("dashboard-view");
     const workspaceView = document.getElementById("workspace-view");
     const calculatorsGrid = document.getElementById("calculators-root-grid");
     const searchInput = document.getElementById("calc-search");
     const categoryTabs = document.querySelectorAll(".cat-tab");
-    
-    // Recent Tracking Components
     const recentContainer = document.getElementById("recent-container");
     const recentChipsWrapper = document.getElementById("recent-chips");
-
-    // Workspace Active Regions
     const inputContainer = document.getElementById("input-panel-container");
     const outputContainer = document.getElementById("output-panel-container");
     const breadcrumbHome = document.getElementById("breadcrumb-home");
     const breadcrumbActive = document.getElementById("breadcrumb-active");
     const brandLogo = document.getElementById("brand-logo");
 
-    /* ==========================================================================
-       2. ACTIVE GLOBAL DYNAMIC CURRENCY LAYER
-       ========================================================================== */
     let currentCurrencyCode = "INR";
     let currencyFormatter = new Intl.NumberFormat("en-IN", { style: "currency", currency: "INR", maximumFractionDigits: 0 });
 
@@ -34,14 +21,11 @@ document.addEventListener("DOMContentLoaded", () => {
         currencySelector.addEventListener("change", (e) => {
             currentCurrencyCode = e.target.value;
             const localeMap = { "INR": "en-IN", "USD": "en-US", "EUR": "de-DE", "GBP": "en-GB" };
-            
             currencyFormatter = new Intl.NumberFormat(localeMap[currentCurrencyCode] || "en-IN", {
                 style: "currency",
                 currency: currentCurrencyCode,
                 maximumFractionDigits: 0
             });
-            
-            // Re-trigger form calculation live instantly if a calculator is currently open
             const openForm = workspaceView.querySelector(".calc-panel:not(.hidden) form");
             if (openForm) {
                 const submitEvent = new Event('submit', { bubbles: true, cancelable: true });
@@ -49,9 +33,7 @@ document.addEventListener("DOMContentLoaded", () => {
             }
         });
     }
-    /* ==========================================================================
-       3. ENGINE INTERACTIVE MATRIX REGISTRY DEFINITIONS
-       ========================================================================== */
+
     const registry = {
         emi: {
             title: "EMI Loan Calculator",
@@ -62,25 +44,25 @@ document.addEventListener("DOMContentLoaded", () => {
                         <div class="input-group">
                             <label for="emi-amount">Principal Loan Amount</label>
                             <input type="number" id="emi-amount" required min="1" step="any" placeholder="e.g., 500000">
-                            <span class="error-msg">Please enter a valid amount greater than 0.</span>
+                            <span class="error-msg">Please enter a valid amount.</span>
                         </div>
                         <div class="input-group">
                             <label for="emi-rate">Annual Interest Rate (%)</label>
                             <input type="number" id="emi-rate" required min="0.1" max="100" step="any" placeholder="e.g., 8.5">
-                            <span class="error-msg">Please enter an interest rate between 0.1% and 100%.</span>
+                            <span class="error-msg">Please enter a valid rate.</span>
                         </div>
                         <div class="input-group">
                             <label for="emi-tenure">Tenure Duration</label>
                             <input type="number" id="emi-tenure" required min="1" max="600" placeholder="e.g., 20">
-                            <span class="error-msg">Please enter a tenure layout value between 1 and 600.</span>
+                            <span class="error-msg">Please enter a valid tenure.</span>
                         </div>
                         <div class="radio-toggle-group">
                             <label class="radio-container">
-                                <input type="radio" name="emi-type" value="years" checked>
+                                <input type="radio" id="emi-type-years" name="emi-type" value="years" checked>
                                 <span class="radio-label">Years</span>
                             </label>
                             <label class="radio-container">
-                                <input type="radio" name="emi-type" value="months">
+                                <input type="radio" id="emi-type-months" name="emi-type" value="months">
                                 <span class="radio-label">Months</span>
                             </label>
                         </div>
@@ -90,19 +72,19 @@ document.addEventListener("DOMContentLoaded", () => {
                     </form>
                 </div>
             `,
-            calculate: (form) => {
-                const amount = parseFloat(form.querySelector("#emi-amount").value);
-                const annualRate = parseFloat(form.querySelector("#emi-rate").value);
-                const tenureVal = parseFloat(form.querySelector("#emi-tenure").value);
-                const type = form.querySelector("input[name='emi-type']:checked").value;
+            calculate: () => {
+                const amount = parseFloat(document.getElementById("emi-amount").value) || 0;
+                const annualRate = parseFloat(document.getElementById("emi-rate").value) || 0;
+                const tenureVal = parseFloat(document.getElementById("emi-tenure").value) || 0;
+                const isYears = document.getElementById("emi-type-years").checked;
 
-                const totalMonths = (type === "years") ? tenureVal * 12 : tenureVal;
+                const totalMonths = isYears ? tenureVal * 12 : tenureVal;
                 const monthlyRate = (annualRate / 12) / 100;
 
                 let emi = 0;
                 if (monthlyRate === 0) {
-                    emi = amount / totalMonths;
-                } else {
+                    emi = totalMonths > 0 ? amount / totalMonths : 0;
+                } else if (totalMonths > 0) {
                     emi = amount * monthlyRate * Math.pow(1 + monthlyRate, totalMonths) / (Math.pow(1 + monthlyRate, totalMonths) - 1);
                 }
 
@@ -118,9 +100,7 @@ document.addEventListener("DOMContentLoaded", () => {
                     </div>
                     <div class="table-container">
                         <table class="data-table">
-                            <thead>
-                                <tr><th>Year</th><th>Principal Component</th><th>Interest Component</th><th>Ending Balance</th></tr>
-                            </thead>
+                            <thead><tr><th>Year</th><th>Principal Component</th><th>Interest Component</th><th>Ending Balance</th></tr></thead>
                             <tbody>
                 `;
 
@@ -141,7 +121,6 @@ document.addEventListener("DOMContentLoaded", () => {
                     html += `<tr><td>Year ${i}</td><td>${currencyFormatter.format(yearlyPrincipal)}</td><td>${currencyFormatter.format(yearlyInterest)}</td><td>${currencyFormatter.format(Math.max(0, balance))}</td></tr>`;
                     if (balance <= 0) break;
                 }
-
                 html += `</tbody></table></div>`;
                 return html;
             }
@@ -155,17 +134,17 @@ document.addEventListener("DOMContentLoaded", () => {
                         <div class="input-group">
                             <label for="sip-investment">Monthly Investment Contribution</label>
                             <input type="number" id="sip-investment" required min="1" placeholder="e.g., 5000">
-                            <span class="error-msg">Please input a valid amount setup.</span>
+                            <span class="error-msg">Please enter a valid amount.</span>
                         </div>
                         <div class="input-group">
                             <label for="sip-rate">Expected Return Rate Per Annum (%)</label>
                             <input type="number" id="sip-rate" required min="0.1" max="50" step="any" placeholder="e.g., 12">
-                            <span class="error-msg">Please adjust returns rate values (0.1% - 50%).</span>
+                            <span class="error-msg">Please enter a valid rate.</span>
                         </div>
                         <div class="input-group">
                             <label for="sip-years">Investment Period (Years)</label>
                             <input type="number" id="sip-years" required min="1" max="50" placeholder="e.g., 15">
-                            <span class="error-msg">Enter a valid operational time period (1 - 50 years).</span>
+                            <span class="error-msg">Please enter a valid year parameter.</span>
                         </div>
                         <div class="form-actions">
                             <button type="submit" class="btn btn-primary">Project Wealth</button>
@@ -173,10 +152,10 @@ document.addEventListener("DOMContentLoaded", () => {
                     </form>
                 </div>
             `,
-            calculate: (form) => {
-                const monthlyContribution = parseFloat(form.querySelector("#sip-investment").value);
-                const annualRate = parseFloat(form.querySelector("#sip-rate").value);
-                const years = parseFloat(form.querySelector("#sip-years").value);
+            calculate: () => {
+                const monthlyContribution = parseFloat(document.getElementById("sip-investment").value) || 0;
+                const annualRate = parseFloat(document.getElementById("sip-rate").value) || 0;
+                const years = parseFloat(document.getElementById("sip-years").value) || 0;
 
                 const totalMonths = years * 12;
                 const monthlyRate = (annualRate / 12) / 100;
@@ -184,7 +163,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 let futureValue = 0;
                 if (monthlyRate === 0) {
                     futureValue = monthlyContribution * totalMonths;
-                } else {
+                } else if (totalMonths > 0) {
                     futureValue = monthlyContribution * ((Math.pow(1 + monthlyRate, totalMonths) - 1) / monthlyRate) * (1 + monthlyRate);
                 }
 
@@ -199,18 +178,15 @@ document.addEventListener("DOMContentLoaded", () => {
                     </div>
                     <div class="table-container">
                         <table class="data-table">
-                            <thead>
-                                <tr><th>End of Year</th><th>Total Invested Capital</th><th>Compounded Projected Value</th></tr>
-                            </thead>
+                            <thead><tr><th>End of Year</th><th>Total Invested Capital</th><th>Compounded Projected Value</th></tr></thead>
                             <tbody>
                 `;
 
                 for (let i = 1; i <= years; i++) {
                     const monthsActive = i * 12;
-                    let currentYearFV = monthlyContribution * ((Math.pow(1 + monthlyRate, monthsActive) - 1) / monthlyRate) * (1 + monthlyRate);
+                    let currentYearFV = monthlyRate === 0 ? monthlyContribution * monthsActive : monthlyContribution * ((Math.pow(1 + monthlyRate, monthsActive) - 1) / monthlyRate) * (1 + monthlyRate);
                     html += `<tr><td>Year ${i}</td><td>${currencyFormatter.format(monthlyContribution * monthsActive)}</td><td>${currencyFormatter.format(currentYearFV)}</td></tr>`;
                 }
-
                 html += `</tbody></table></div>`;
                 return html;
             }
@@ -229,12 +205,12 @@ document.addEventListener("DOMContentLoaded", () => {
                         <div class="input-group">
                             <label for="fd-rate">Rate of Interest (%)</label>
                             <input type="number" id="fd-rate" required min="0.1" max="30" step="any" placeholder="e.g., 7.1">
-                            <span class="error-msg">Interest scaling input value out of range (0.1% - 30%).</span>
+                            <span class="error-msg">Interest rate invalid.</span>
                         </div>
                         <div class="input-group">
                             <label for="fd-years">Duration Tenure (Years)</label>
                             <input type="number" id="fd-years" required min="1" max="30" placeholder="e.g., 5">
-                            <span class="error-msg">Please specify operational duration framework timelines (1 - 30 years).</span>
+                            <span class="error-msg">Please specify duration.</span>
                         </div>
                         <div class="form-actions">
                             <button type="submit" class="btn btn-primary">Calculate Maturity</button>
@@ -242,10 +218,10 @@ document.addEventListener("DOMContentLoaded", () => {
                     </form>
                 </div>
             `,
-            calculate: (form) => {
-                const principal = parseFloat(form.querySelector("#fd-principal").value);
-                const rate = parseFloat(form.querySelector("#fd-rate").value);
-                const years = parseFloat(form.querySelector("#fd-years").value);
+            calculate: () => {
+                const principal = parseFloat(document.getElementById("fd-principal").value) || 0;
+                const rate = parseFloat(document.getElementById("fd-rate").value) || 0;
+                const years = parseFloat(document.getElementById("fd-years").value) || 0;
 
                 const compoundingFrequency = 4; 
                 const maturityValue = principal * Math.pow(1 + (rate / (compoundingFrequency * 100)), compoundingFrequency * years);
@@ -259,9 +235,7 @@ document.addEventListener("DOMContentLoaded", () => {
                     </div>
                     <div class="table-container">
                         <table class="data-table">
-                            <thead>
-                                <tr><th>Year Frame</th><th>Interest Accumulated</th><th>Ending Account Value</th></tr>
-                            </thead>
+                            <thead><tr><th>Year Frame</th><th>Interest Accumulated</th><th>Ending Account Value</th></tr></thead>
                             <tbody>
                 `;
 
@@ -270,7 +244,6 @@ document.addEventListener("DOMContentLoaded", () => {
                     const currentYearInterest = currentYearFV - principal;
                     html += `<tr><td>Year ${i}</td><td>${currencyFormatter.format(currentYearInterest)}</td><td>${currencyFormatter.format(currentYearFV)}</td></tr>`;
                 }
-
                 html += `</tbody></table></div>`;
                 return html;
             }
@@ -289,12 +262,12 @@ document.addEventListener("DOMContentLoaded", () => {
                         <div class="input-group">
                             <label for="inf-rate">Estimated Dynamic Inflation Rate (%)</label>
                             <input type="number" id="inf-rate" required min="0.1" max="25" step="any" placeholder="e.g., 6">
-                            <span class="error-msg">Enter standard annualized framework percentages (0.1% - 25%).</span>
+                            <span class="error-msg">Enter standard annualized framework percentages.</span>
                         </div>
                         <div class="input-group">
                             <label for="inf-years">Timeline (Years Horizon)</label>
                             <input type="number" id="inf-years" required min="1" max="50" placeholder="e.g., 10">
-                            <span class="error-msg">Set target evaluation horizon maps (1 - 50 years).</span>
+                            <span class="error-msg">Set target evaluation horizon maps.</span>
                         </div>
                         <div class="form-actions">
                             <button type="submit" class="btn btn-primary">Process Value Drop</button>
@@ -302,10 +275,10 @@ document.addEventListener("DOMContentLoaded", () => {
                     </form>
                 </div>
             `,
-            calculate: (form) => {
-                const amount = parseFloat(form.querySelector("#inf-amount").value);
-                const rate = parseFloat(form.querySelector("#inf-rate").value);
-                const years = parseFloat(form.querySelector("#inf-years").value);
+            calculate: () => {
+                const amount = parseFloat(document.getElementById("inf-amount").value) || 0;
+                const rate = parseFloat(document.getElementById("inf-rate").value) || 0;
+                const years = parseFloat(document.getElementById("inf-years").value) || 0;
 
                 const futurePurchasingPower = amount / Math.pow(1 + (rate / 100), years);
                 const lostPurchasingPower = amount - futurePurchasingPower;
@@ -317,9 +290,7 @@ document.addEventListener("DOMContentLoaded", () => {
                     </div>
                     <div class="table-container">
                         <table class="data-table">
-                            <thead>
-                                <tr><th>Elapsed Year Horizon</th><th>Real Value Purchase Equivalent</th></tr>
-                            </thead>
+                            <thead><tr><th>Elapsed Year Horizon</th><th>Real Value Purchase Equivalent</th></tr></thead>
                             <tbody>
                 `;
 
@@ -327,7 +298,6 @@ document.addEventListener("DOMContentLoaded", () => {
                     const currentYearFV = amount / Math.pow(1 + (rate / 100), i);
                     html += `<tr><td>Year ${i}</td><td>${currencyFormatter.format(currentYearFV)}</td></tr>`;
                 }
-
                 html += `</tbody></table></div>`;
                 return html;
             }
@@ -354,11 +324,11 @@ document.addEventListener("DOMContentLoaded", () => {
                         </div>
                         <div class="radio-toggle-group">
                             <label class="radio-container">
-                                <input type="radio" name="gst-mode" value="exclusive" checked>
+                                <input type="radio" id="gst-mode-exclusive" name="gst-mode" value="exclusive" checked>
                                 <span class="radio-label">GST Exclusive (Add Tax)</span>
                             </label>
                             <label class="radio-container">
-                                <input type="radio" name="gst-mode" value="inclusive">
+                                <input type="radio" id="gst-mode-inclusive" name="gst-mode" value="inclusive">
                                 <span class="radio-label">GST Inclusive (Extract Tax)</span>
                             </label>
                         </div>
@@ -368,16 +338,16 @@ document.addEventListener("DOMContentLoaded", () => {
                     </form>
                 </div>
             `,
-            calculate: (form) => {
-                const amount = parseFloat(form.querySelector("#gst-amount").value);
-                const slabRate = parseFloat(form.querySelector("#gst-rate").value);
-                const mode = form.querySelector("input[name='gst-mode']:checked").value;
+            calculate: () => {
+                const amount = parseFloat(document.getElementById("gst-amount").value) || 0;
+                const slabRate = parseFloat(document.getElementById("gst-rate").value) || 0;
+                const modeExclusive = document.getElementById("gst-mode-exclusive").checked;
 
                 let taxValue = 0;
                 let finalNetGrossAmount = 0;
                 let baseCostResultVal = 0;
 
-                if (mode === "exclusive") {
+                if (modeExclusive) {
                     taxValue = amount * (slabRate / 100);
                     finalNetGrossAmount = amount + taxValue;
                     baseCostResultVal = amount;
@@ -410,15 +380,12 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     };
 
-    /* ==========================================================================
-       4. INTERACTIVE ROUTING VIEW & WORKSPACE EVENT BUS
-       ========================================================================== */
     function renderPlaceholderOutput() {
         outputContainer.innerHTML = `
             <div class="output-placeholder">
                 <svg class="placeholder-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z"></path></svg>
-                <h3>Computation Matrix Empty</h3>
-                <p>Modify parameters and execute calculation actions.</p>
+                <h3>Computation Matrix Ready</h3>
+                <p>Modify local parameters variables and click calculate to execute.</p>
             </div>
         `;
     }
@@ -468,7 +435,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
             if (!formsAreValid) return;
 
-            outputContainer.innerHTML = registry[id].calculate(form);
+            outputContainer.innerHTML = registry[id].calculate();
         });
 
         form.querySelectorAll("input").forEach(field => {
@@ -479,9 +446,6 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 
-    /* ==========================================================================
-       5. USER BEHAVIOR TRACKING (RECENTS ENGINE)
-       ========================================================================== */
     function updateRecentListTrack(id) {
         let activeRecents = JSON.parse(localStorage.getItem("money_mate_recents") || "[]");
         activeRecents = activeRecents.filter(item => item !== id);
@@ -511,9 +475,6 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 
-    /* ==========================================================================
-       6. GLOBAL TELEMETRY SEARCH FILTER ENGINE BUS
-       ========================================================================== */
     function runGlobalGridFilterSearch() {
         const textCriteria = searchInput.value.toLowerCase().trim();
         const targetedTabActiveCategory = document.querySelector(".cat-tab.active").getAttribute("data-category");
@@ -558,9 +519,6 @@ document.addEventListener("DOMContentLoaded", () => {
     if (breadcrumbHome) breadcrumbHome.addEventListener("click", (e) => { e.preventDefault(); routeToDashboard(); });
     if (brandLogo) brandLogo.addEventListener("click", (e) => { e.preventDefault(); routeToDashboard(); });
 
-    /* ==========================================================================
-       7. THEME MANAGER MATRIX
-       ========================================================================== */
     const themeToggleBtn = document.getElementById("theme-toggle");
     if (themeToggleBtn) {
         themeToggleBtn.addEventListener("click", () => {
