@@ -751,3 +751,30 @@ body {
 }
 
 .hidden { display: none !important; }
+
+/* ==========================================================================
+   11. RICH TEXT CONTENT ARTICLES TYPOGRAPHY
+   ========================================================================== */
+.finance-article-hub {
+    margin-top: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+.article-segment h3 {
+    font-size: 1.15rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    color: var(--brand-primary);
+}
+.article-segment p {
+    font-size: 0.925rem;
+    line-height: 1.6;
+    color: var(--text-secondary);
+    margin-bottom: 0.75rem;
+}
+.faq-accordion-header {
+    margin-top: 2.5rem;
+    margin-bottom: 1rem;
+}
+
