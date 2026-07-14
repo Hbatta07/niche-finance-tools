@@ -87,6 +87,10 @@ document.addEventListener("DOMContentLoaded", () => {
                             <button type="submit" class="btn btn-primary">Calculate EMI</button>
                         </div>
                     </form>
+                    <div class="affiliate-container" style="margin-top: 1.25rem; padding: 0.75rem; border: 1px dashed var(--border-color); border-radius: 0.5rem; text-align: center; font-size: 0.85rem;">
+                        <span style="color: var(--text-secondary);">Paying too much interest?</span> 
+                        <a href="#" class="affiliate-link" style="color: var(--brand-primary); font-weight: 600; text-decoration: none; margin-left: 0.25rem;">Check Free Refinancing Rates &rarr;</a>
+                    </div>
                 </div>
             `,
             calculate: () => {
@@ -167,6 +171,10 @@ document.addEventListener("DOMContentLoaded", () => {
                             <button type="submit" class="btn btn-primary">Project Wealth</button>
                         </div>
                     </form>
+                    <div class="affiliate-container" style="margin-top: 1.25rem; padding: 0.75rem; border: 1px dashed var(--border-color); border-radius: 0.5rem; text-align: center; font-size: 0.85rem;">
+                        <span style="color: var(--text-secondary);">Maximize your yield.</span> 
+                        <a href="#" class="affiliate-link" style="color: var(--brand-primary); font-weight: 600; text-decoration: none; margin-left: 0.25rem;">Open Free Zero-Brokerage Account &rarr;</a>
+                    </div>
                 </div>
             `,
             calculate: () => {
@@ -233,6 +241,10 @@ document.addEventListener("DOMContentLoaded", () => {
                             <button type="submit" class="btn btn-primary">Calculate Maturity</button>
                         </div>
                     </form>
+                    <div class="affiliate-container" style="margin-top: 1.25rem; padding: 0.75rem; border: 1px dashed var(--border-color); border-radius: 0.5rem; text-align: center; font-size: 0.85rem;">
+                        <span style="color: var(--text-secondary);">Want higher guaranteed returns?</span> 
+                        <a href="#" class="affiliate-link" style="color: var(--brand-primary); font-weight: 600; text-decoration: none; margin-left: 0.25rem;">Compare Top Bank FD Rates &rarr;</a>
+                    </div>
                 </div>
             `,
             calculate: () => {
@@ -290,6 +302,10 @@ document.addEventListener("DOMContentLoaded", () => {
                             <button type="submit" class="btn btn-primary">Process Value Drop</button>
                         </div>
                     </form>
+                    <div class="affiliate-container" style="margin-top: 1.25rem; padding: 0.75rem; border: 1px dashed var(--border-color); border-radius: 0.5rem; text-align: center; font-size: 0.85rem;">
+                        <span style="color: var(--text-secondary);">Protect your cash reserves.</span> 
+                        <a href="#" class="affiliate-link" style="color: var(--brand-primary); font-weight: 600; text-decoration: none; margin-left: 0.25rem;">Explore High-Yield Inflation Hedges &rarr;</a>
+                    </div>
                 </div>
             `,
             calculate: () => {
@@ -353,6 +369,10 @@ document.addEventListener("DOMContentLoaded", () => {
                             <button type="submit" class="btn btn-primary">Process Invoice Ledger</button>
                         </div>
                     </form>
+                    <div class="affiliate-container" style="margin-top: 1.25rem; padding: 0.75rem; border: 1px dashed var(--border-color); border-radius: 0.5rem; text-align: center; font-size: 0.85rem;">
+                        <span style="color: var(--text-secondary);">Automate your corporate taxes.</span> 
+                        <a href="#" class="affiliate-link" style="color: var(--brand-primary); font-weight: 600; text-decoration: none; margin-left: 0.25rem;">Try Free Cloud Invoicing Accounting Software &rarr;</a>
+                    </div>
                 </div>
             `,
             calculate: () => {
@@ -548,4 +568,15 @@ document.addEventListener("DOMContentLoaded", () => {
     const cachedTheme = localStorage.getItem("money_mate_theme") || "dark";
     document.documentElement.setAttribute("data-theme", cachedTheme);
     renderRecentTrackingChips();
+
+    /* ==========================================================================
+       8. PROGRESSIVE WEB APP (PWA) SERVICE WORKER REGISTRATION
+       ========================================================================== */
+    if ("serviceWorker" in navigator) {
+        window.addEventListener("load", () => {
+            navigator.serviceWorker.register("/niche-finance-tools/sw.js")
+                .then((reg) => console.log("Service Worker registered successfully:", reg.scope))
+                .catch((err) => console.error("Service Worker registration failed:", err));
+        });
+    }
 });
